@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>מקומי</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAF3E7;
+    --ink: #14232B;
+    --coral: #FF5748;
+    --teal: #00A88E;
+    --yellow: #FFC53D;
+    --plum: #8E4D9E;
+    --blue: #2D7DD2;
+    --soft: #6B7A80;
+    --card: #FFFDF8;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: 'Heebo', -apple-system, 'Segoe UI', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100dvh;
+    line-height: 1.55;
+    background-image: radial-gradient(circle, rgba(20,35,43,0.06) 2px, transparent 2px);
+    background-size: 26px 26px;
+  }
+  #app { max-width: 640px; margin: 0 auto; padding: 0 18px 110px; }
+
+  /* ===== typography ===== */
+  h1 { font-size: clamp(3.4rem, 16vw, 5rem); font-weight: 900; line-height: 1; letter-spacing: -0.02em; }
+  h2 { font-size: clamp(1.7rem, 8vw, 2.4rem); font-weight: 900; line-height: 1.1; }
+  .mark { background: var(--yellow); padding: 0 10px 4px; border-radius: 8px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+  .kicker { font-weight: 700; font-size: 0.95rem; }
+  .soft { color: var(--soft); }
+
+  /* ===== flat game pieces ===== */
+  .piece {
+    background: var(--card);
+    border: 3px solid var(--ink);
+    border-radius: 18px;
+    box-shadow: -6px 6px 0 var(--ink);
+  }
+  button { font: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .btn {
+    display: block; width: 100%; padding: 15px 18px;
+    background: var(--yellow); color: var(--ink);
+    border: 3px solid var(--ink); border-radius: 16px;
+    box-shadow: -5px 5px 0 var(--ink);
+    font-size: 1.15rem; font-weight: 900;
+    transition: transform 0.08s, box-shadow 0.08s;
+  }
+  .btn:active { transform: translate(-3px, 3px); box-shadow: -1px 1px 0 var(--ink); }
+  .btn.coral { background: var(--coral); color: #fff; }
+  .btn.teal  { background: var(--teal); color: #fff; }
+  .btn.ghost { background: var(--card); box-shadow: -3px 3px 0 var(--ink); font-weight: 700; font-size: 1rem; }
+  .btn + .btn { margin-top: 14px; }
+  input[type="text"], input[type="tel"], textarea {
+    width: 100%; padding: 14px 16px; font: inherit; font-size: 1.05rem;
+    background: var(--card); color: var(--ink);
+    border: 3px solid var(--ink); border-radius: 14px; outline: none;
+    box-shadow: -4px 4px 0 rgba(20,35,43,0.15);
+  }
+  input:focus, textarea:focus { box-shadow: -4px 4px 0 var(--teal); }
+  textarea { resize: vertical; min-height: 150px; }
+  label { display: block; font-weight: 900; margin: 24px 0 8px; font-size: 1.05rem; }
+  .hint { font-size: 0.88rem; color: var(--soft); margin-top: 6px; }
+  .counter { text-align: left; font-size: 0.8rem; color: var(--soft); margin-top: 4px; }
+
+  /* ===== ripple mark ===== */
+  .ripple { display: block; }
+
+  /* ===== join ===== */
+  .join { padding-top: 7dvh; text-align: center; }
+  .join .logo { position: relative; display: inline-block; }
+  .join .chip {
+    display: inline-block; margin-top: 14px; padding: 6px 18px;
+    background: var(--ink); color: var(--bg); border-radius: 99px;
+    font-weight: 700; font-size: 1.05rem; transform: rotate(-2deg);
+  }
+  .join .intro { margin-top: 22px; font-size: 1.05rem; }
+  .join form { margin-top: 30px; text-align: right; background: var(--card); border: 3px solid var(--ink); border-radius: 20px; padding: 22px; box-shadow: -7px 7px 0 var(--ink); }
+  .join form label { margin-top: 0; }
+  .join .btn { margin-top: 18px; }
+
+  /* ===== nav ===== */
+  nav {
+    position: fixed; bottom: 0; right: 0; left: 0; z-index: 20;
+    background: var(--card); border-top: 3px solid var(--ink);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  nav .wrap { display: flex; gap: 6px; width: 100%; max-width: 640px; margin: 0 auto; padding: 10px 12px; }
+  nav button {
+    flex: 1; background: none; border: 3px solid transparent; border-radius: 14px;
+    color: var(--soft); padding: 8px 4px; font-size: 1rem; font-weight: 900;
+  }
+  nav button.on { background: var(--yellow); border-color: var(--ink); color: var(--ink); box-shadow: -3px 3px 0 var(--ink); }
+
+  /* ===== screens ===== */
+  .screen { display: none; padding-top: 26px; }
+  .screen.on { display: block; animation: rise 0.25s ease; }
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  .head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+
+  /* ===== progress bar ===== */
+  .bar-wrap { margin: 0 0 20px; }
+  .bar-label { display: flex; justify-content: space-between; font-weight: 900; font-size: 0.95rem; margin-bottom: 6px; }
+  .bar { height: 18px; background: var(--card); border: 3px solid var(--ink); border-radius: 99px; overflow: hidden; }
+  .bar .fill { height: 100%; background: var(--teal); border-left: 3px solid var(--ink); transition: width 0.5s ease; min-width: 0; }
+  .bar .fill.empty { border-left: none; }
+
+  /* ===== cards ===== */
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .gcard {
+    border: 3px solid var(--ink); border-radius: 18px; overflow: hidden;
+    background: var(--card); box-shadow: -5px 5px 0 var(--ink);
+    cursor: pointer; text-align: right; padding: 0;
+    display: flex; flex-direction: column;
+    transition: transform 0.08s, box-shadow 0.08s;
+    animation: flipin 0.45s ease backwards;
+  }
+  .gcard:active { transform: translate(-3px, 3px); box-shadow: -1px 1px 0 var(--ink); }
+  @keyframes flipin { from { opacity: 0; transform: perspective(700px) rotateY(70deg); } to { opacity: 1; transform: none; } }
+  .gcard .img { aspect-ratio: 4/3; background-size: cover; background-position: center; border-bottom: 3px solid var(--ink); }
+  .gcard .blockimg { aspect-ratio: 4/3; border-bottom: 3px solid var(--ink); display: flex; align-items: center; justify-content: center; }
+  .gcard .body { padding: 10px 12px 12px; }
+  .gcard .title { font-weight: 900; font-size: 1.05rem; line-height: 1.2; display: block; }
+  .tag {
+    display: inline-block; margin-top: 8px; font-size: 0.8rem; font-weight: 900;
+    padding: 2px 10px; border-radius: 99px; border: 2px solid var(--ink);
+  }
+  .tag.mine { background: var(--ink); color: var(--bg); }
+  .tag.done { background: var(--teal); color: #fff; }
+  .tag.todo { background: var(--yellow); }
+  .tag.author { background: var(--coral); color: #fff; }
+
+  /* ===== face-down deck (שלב המילוי) ===== */
+  .deck-scene { text-align: center; padding: 26px 0 10px; }
+  .deck { position: relative; width: 190px; height: 250px; margin: 18px auto 26px; }
+  .cardback {
+    position: absolute; inset: 0; border: 3px solid var(--ink); border-radius: 18px;
+    background: var(--teal);
+    background-image: radial-gradient(circle at 50% 50%, transparent 0 18px, rgba(255,255,255,0.28) 18px 21px, transparent 21px 40px, rgba(255,255,255,0.2) 40px 43px, transparent 43px);
+    background-size: 96px 96px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cardback .q {
+    width: 74px; height: 74px; border-radius: 50%; background: var(--card);
+    border: 3px solid var(--ink); display: flex; align-items: center; justify-content: center;
+    font-size: 2.4rem; font-weight: 900;
+  }
+  .deck .cardback:nth-child(1) { transform: rotate(-7deg); background-color: var(--plum); }
+  .deck .cardback:nth-child(2) { transform: rotate(5deg); background-color: var(--coral); }
+  .deck .cardback:nth-child(3) { box-shadow: -6px 6px 0 var(--ink); animation: bob 2.6s ease-in-out infinite; }
+  @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+  .bignum { font-size: 3.4rem; font-weight: 900; line-height: 1; }
+
+  /* ===== overlay (קלף פתוח) ===== */
+  .overlay { position: fixed; inset: 0; z-index: 30; background: var(--bg); overflow-y: auto; display: none;
+    background-image: radial-gradient(circle, rgba(20,35,43,0.06) 2px, transparent 2px); background-size: 26px 26px; }
+  .overlay.on { display: block; animation: rise 0.2s ease; }
+  .overlay .inner { max-width: 640px; margin: 0 auto; padding: 14px 18px 60px; }
+  .overlay .top { display: flex; justify-content: flex-end; }
+  .overlay .hero { border: 3px solid var(--ink); border-radius: 18px; box-shadow: -6px 6px 0 var(--ink); aspect-ratio: 16/10; background-size: cover; background-position: center; margin: 10px 0 22px; }
+  .overlay .hero.blockimg { display: flex; align-items: center; justify-content: center; }
+  .overlay .story { font-size: 1.15rem; margin-top: 14px; white-space: pre-wrap; }
+  .close-x { background: var(--card); border: 3px solid var(--ink); border-radius: 12px; box-shadow: -3px 3px 0 var(--ink); font-weight: 900; padding: 8px 14px; }
+  .guess-list { margin-top: 12px; display: grid; gap: 10px; }
+  .guess-list button {
+    text-align: right; padding: 12px 16px; background: var(--card);
+    border: 3px solid var(--ink); border-radius: 14px; font-size: 1rem; font-weight: 700;
+    box-shadow: -3px 3px 0 rgba(20,35,43,0.18);
+  }
+  .guess-list button.picked { background: var(--teal); color: #fff; box-shadow: -3px 3px 0 var(--ink); }
+
+  /* ===== reveal ===== */
+  .stat-hero {
+    border: 3px solid var(--ink); border-radius: 20px; box-shadow: -7px 7px 0 var(--ink);
+    padding: 26px 22px; color: #fff; background: var(--coral); margin-bottom: 16px;
+    transform: rotate(-1deg);
+  }
+  .stat-hero .big { font-size: 3.4rem; font-weight: 900; line-height: 1; }
+  .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .stat { border: 3px solid var(--ink); border-radius: 18px; padding: 14px 16px; background: var(--card); box-shadow: -4px 4px 0 var(--ink); }
+  .stat .n { font-size: 1.9rem; font-weight: 900; }
+  .stat .t { font-size: 0.85rem; color: var(--soft); font-weight: 700; }
+  .stat.wide { margin-bottom: 16px; }
+  .stat .name { font-weight: 900; font-size: 1.2rem; }
+
+  /* confetti */
+  .confetti { position: fixed; inset: 0; pointer-events: none; z-index: 40; overflow: hidden; }
+  .confetti i {
+    position: absolute; top: -4vh; width: 12px; height: 18px; border: 2px solid var(--ink);
+    animation: fall 3.2s ease-in forwards;
+  }
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity: 0.9; } }
+
+  /* ===== admin ===== */
+  .stepper { display: grid; gap: 12px; margin: 22px 0; }
+  .step { border: 3px solid var(--ink); border-radius: 16px; padding: 12px 16px; background: var(--card); display: flex; align-items: center; gap: 12px; opacity: 0.55; }
+  .step.now { opacity: 1; box-shadow: -5px 5px 0 var(--ink); background: var(--yellow); }
+  .step .dot { width: 34px; height: 34px; border-radius: 50%; border: 3px solid var(--ink); background: var(--card); display: flex; align-items: center; justify-content: center; font-weight: 900; flex: none; }
+  .step.now .dot { background: var(--ink); color: var(--yellow); }
+  table { width: 100%; border-collapse: collapse; margin-top: 18px; }
+  td, th { padding: 10px 6px; border-bottom: 2px solid rgba(20,35,43,0.15); text-align: right; font-size: 0.95rem; }
+  th { color: var(--soft); font-size: 0.82rem; }
+  .yes { color: var(--teal); font-weight: 900; }
+  .no { color: var(--coral); font-weight: 900; }
+
+  /* ===== toast ===== */
+  #toast {
+    position: fixed; bottom: 92px; right: 50%; transform: translateX(50%);
+    background: var(--ink); color: var(--bg); padding: 12px 22px;
+    border-radius: 14px; border: 3px solid var(--ink); box-shadow: -4px 4px 0 rgba(20,35,43,0.3);
+    font-weight: 900; z-index: 50; display: none; max-width: 90vw; text-align: center;
+  }
+  #toast.on { display: block; animation: rise 0.2s ease; }
+  #toast.err { background: var(--coral); color: #fff; }
+
+  .success-note {
+    background: var(--teal); color: #fff; border: 3px solid var(--ink); border-radius: 16px;
+    box-shadow: -4px 4px 0 var(--ink); padding: 14px 18px; font-weight: 900; margin-top: 20px;
+  }
+  .success-note.coral { background: var(--coral); }
+  .waiting { text-align: center; padding: 40px 0; }
+  .imgpick { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
+  .imgpick .preview { width: 88px; height: 66px; border-radius: 12px; background: var(--card); background-size: cover; background-position: center; border: 3px solid var(--ink); flex: none; }
+  .imgpick .btn { width: auto; margin: 0; padding: 10px 16px; font-size: 1rem; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="toast"></div>
+
+<script>
+"use strict";
+
+/* ===== חיבור ===== */
+const SB_URL = "https://ndrhiikczkbosentclnh.supabase.co";
+const SB_KEY = "sb_publishable_EckoZz1eIoRjjjQ9XhXhzA_EpuKVWQG";
+const HEADERS = { "apikey": SB_KEY, "Authorization": "Bearer " + SB_KEY, "Content-Type": "application/json" };
+
+async function rpc(fn, args) {
+  const r = await fetch(`${SB_URL}/rest/v1/rpc/${fn}`, { method: "POST", headers: HEADERS, body: JSON.stringify(args) });
+  if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error(e.message || "network"); }
+  const text = await r.text();
+  return text ? JSON.parse(text) : null;
+}
+async function get(path) {
+  const r = await fetch(`${SB_URL}/rest/v1/${path}`, { headers: HEADERS });
+  if (!r.ok) throw new Error("network");
+  return r.json();
+}
+
+/* ===== מצב מקומי ===== */
+const store = {
+  get id() { return localStorage.getItem("mekomi_id"); },
+  set id(v) { localStorage.setItem("mekomi_id", v); },
+  get name() { return localStorage.getItem("mekomi_name"); },
+  set name(v) { localStorage.setItem("mekomi_name", v); },
+  get mine() { try { return JSON.parse(localStorage.getItem("mekomi_mine")); } catch { return null; } },
+  set mine(v) { localStorage.setItem("mekomi_mine", JSON.stringify(v)); },
+  get draft() { try { return JSON.parse(localStorage.getItem("mekomi_draft")) || {}; } catch { return {}; } },
+  set draft(v) { localStorage.setItem("mekomi_draft", JSON.stringify(v)); }
+};
+
+const state = {
+  phase: "submitting",
+  placesCount: 0,
+  participantsCount: 0,
+  participants: [],
+  places: [],
+  guesses: [],
+  allGuesses: [],
+  tab: "mine",
+  pendingImage: null,
+  admin: null
+};
+
+/* ===== עזרים ===== */
+const $ = sel => document.querySelector(sel);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const CARD_COLORS = ["var(--teal)", "var(--yellow)", "var(--plum)", "var(--blue)", "var(--coral)"];
+const colorFor = id => CARD_COLORS[[...id].reduce((a, c) => a + c.charCodeAt(0), 0) % CARD_COLORS.length];
+const nameOf = id => state.participants.find(x => x.id === id)?.name || "";
+const isMine = p => (state.phase === "revealed" && p.author_id) ? p.author_id === store.id : p.id === store.mine?.id;
+
+function toast(msg, err) {
+  const t = $("#toast");
+  t.textContent = msg;
+  t.className = "on" + (err ? " err" : "");
+  clearTimeout(t._h);
+  t._h = setTimeout(() => t.className = "", 2600);
+}
+
+function ripple(size, color, weight) {
+  const c = color || "var(--coral)";
+  const w = weight || 3.5;
+  return `<svg class="ripple" width="${size}" height="${size}" viewBox="0 0 100 100" aria-hidden="true">
+    <circle cx="50" cy="50" r="11" fill="${c}" stroke="var(--ink)" stroke-width="${w}"/>
+    <circle cx="50" cy="50" r="28" fill="none" stroke="${c}" stroke-width="${w}"/>
+    <circle cx="50" cy="50" r="44" fill="none" stroke="${c}" stroke-width="${w}" opacity="0.55"/>
+  </svg>`;
+}
+
+function confetti() {
+  const colors = ["#FF5748", "#00A88E", "#FFC53D", "#8E4D9E", "#2D7DD2"];
+  const box = document.createElement("div");
+  box.className = "confetti";
+  for (let i = 0; i < 28; i++) {
+    const p = document.createElement("i");
+    p.style.right = Math.random() * 100 + "vw";
+    p.style.background = colors[i % colors.length];
+    p.style.animationDelay = (Math.random() * 0.9) + "s";
+    p.style.animationDuration = (2.4 + Math.random() * 1.6) + "s";
+    box.appendChild(p);
+  }
+  document.body.appendChild(box);
+  setTimeout(() => box.remove(), 5200);
+}
+
+/* ===== טעינת נתונים ===== */
+async function refresh() {
+  const [st, parts, places] = await Promise.all([
+    get("mekomi_state?select=*"),
+    get("mekomi_participants_public?select=id,name&order=name"),
+    get("mekomi_places_public?select=*&order=updated_at.desc")
+  ]);
+  state.phase = st[0]?.phase || "submitting";
+  state.placesCount = st[0]?.places_count ?? 0;
+  state.participantsCount = st[0]?.participants_count ?? 0;
+  state.participants = parts;
+  state.places = places;
+  if (store.id) {
+    state.guesses = await get(`mekomi_guesses?select=place_id,guessed_author_id&guesser_id=eq.${store.id}`);
+  }
+  if (state.phase === "revealed") {
+    state.allGuesses = await get("mekomi_guesses?select=guesser_id,place_id,guessed_author_id");
+  }
+}
+
+/* ===== ניתוב ===== */
+function render() {
+  if (location.hash === "#admin") return renderAdmin();
+  if (!store.id) return renderJoin();
+  renderMain();
+}
+
+/* ===== כניסה ===== */
+function renderJoin() {
+  $("#app").innerHTML = `
+    <div class="join">
+      <div class="logo">${ripple(110)}</div>
+      <h1>מקומי</h1>
+      <span class="chip">משנה מקום, מקום משני</span>
+      <p class="intro">לכל אחת ואחד יש מקום שהוא חלק ממי שהם.<br>ננסה לגלות של מי כל מקום. מוכנים?</p>
+      <form id="joinForm">
+        <label for="jname">איך קוראים לך?</label>
+        <input type="text" id="jname" autocomplete="name" placeholder="שם פרטי ומשפחה" maxlength="60" required>
+        <button class="btn" type="submit">נכנסים למשחק</button>
+      </form>
+    </div>`;
+  $("#joinForm").onsubmit = async e => {
+    e.preventDefault();
+    const name = $("#jname").value.trim();
+    if (name.length < 2) return toast("צריך שם, שנדע מי כאן", true);
+    try {
+      const id = await rpc("mekomi_join", { p_name: name });
+      store.id = id; store.name = name;
+      state.tab = "mine";
+      await refresh(); render();
+      toast("ברוכים הבאים. עכשיו המקום שלך");
+    } catch { toast("אין קליטה כרגע. נסו שוב עוד רגע", true); }
+  };
+}
+
+/* ===== מסך ראשי ===== */
+function renderMain() {
+  const tabs = [["mine", "המקום שלי"], ["cards", "הקלפים"], ["reveal", "החשיפה"]];
+  $("#app").innerHTML = `
+    <div class="screen on" id="screen"></div>
+    <nav><div class="wrap">
+      ${tabs.map(([k, t]) => `<button data-tab="${k}" class="${state.tab === k ? "on" : ""}">${t}</button>`).join("")}
+    </div></nav>
+    <div class="overlay" id="overlay"></div>`;
+  document.querySelectorAll("nav button").forEach(b => b.onclick = async () => {
+    state.tab = b.dataset.tab;
+    try { await refresh(); } catch {}
+    render();
+  });
+  if (state.tab === "mine") renderMine();
+  if (state.tab === "cards") renderCards();
+  if (state.tab === "reveal") renderReveal();
+}
+
+/* ----- המקום שלי ----- */
+function renderMine() {
+  const mine = store.mine;
+  const d = store.draft;
+  const locked = state.phase === "revealed";
+  $("#screen").innerHTML = `
+    <p class="kicker" style="color:var(--coral)">שלום, ${esc(store.name)}</p>
+    <h2><span class="mark">המקום שלך</span></h2>
+    <p class="soft" style="margin-top:10px">מקום שאת או אתה מרגישים אליו שייכות. לא חייב להיות מקום פיזי.</p>
+    ${mine && !locked ? `<div class="success-note">הקלף שלך במשחק. אפשר לערוך עד חשיפת השמות.</div>` : ""}
+    ${locked ? `<div class="success-note coral">השמות נחשפו והמשחק הסתיים. תודה ששיחקתם.</div>` : ""}
+    <form id="placeForm" ${locked ? "style='opacity:0.55;pointer-events:none'" : ""}>
+      <label for="ptitle">שם המקום</label>
+      <input type="text" id="ptitle" maxlength="80" placeholder="למשל: הסלע שמול הים" value="${esc(d.title ?? mine?.title ?? "")}">
+      <label for="pstory">מה המקום הזה בשבילך?</label>
+      <textarea id="pstory" maxlength="600" placeholder="הסיפור שהופך את המקום הזה לשלך">${esc(d.story ?? mine?.story ?? "")}</textarea>
+      <div class="counter"><span id="cnt">0</span>/600</div>
+      <label>תמונה (לא חובה)</label>
+      <div class="imgpick">
+        <div class="preview" id="imgPrev" ${mine?.image_url ? `style="background-image:url('${esc(mine.image_url)}')"` : ""}></div>
+        <button type="button" class="btn ghost" id="imgBtn">בחירת תמונה</button>
+        <input type="file" id="imgFile" accept="image/*" hidden>
+      </div>
+      <p class="hint">בלי תמונה שלך או של המשפחה. תנו למקום לרמוז, לא לגלות.</p>
+      <button class="btn coral" type="submit" style="margin-top:26px">${mine ? "שומרים שינויים" : "שולחים את הקלף"}</button>
+    </form>`;
+  const story = $("#pstory"), cnt = $("#cnt");
+  const updCnt = () => cnt.textContent = story.value.length;
+  updCnt();
+  const saveDraft = () => store.draft = { title: $("#ptitle").value, story: story.value };
+  story.oninput = () => { updCnt(); saveDraft(); };
+  $("#ptitle").oninput = saveDraft;
+  $("#imgBtn").onclick = () => $("#imgFile").click();
+  $("#imgFile").onchange = async e => {
+    const f = e.target.files[0];
+    if (!f) return;
+    state.pendingImage = await shrink(f);
+    $("#imgPrev").style.backgroundImage = `url('${state.pendingImage}')`;
+    toast("התמונה מוכנה, אל תשכחו לשלוח");
+  };
+  $("#placeForm").onsubmit = async e => {
+    e.preventDefault();
+    const title = $("#ptitle").value.trim(), text = story.value.trim();
+    if (!title) return toast("חסר שם למקום", true);
+    if (!text) return toast("ספרו משהו על המקום, גם משפט אחד שווה", true);
+    try {
+      let imageUrl = mine?.image_url || null;
+      if (state.pendingImage) imageUrl = await upload(state.pendingImage);
+      const placeId = await rpc("mekomi_upsert_place", { p_participant: store.id, p_title: title, p_story: text, p_image_url: imageUrl });
+      store.mine = { id: placeId, title, story: text, image_url: imageUrl };
+      store.draft = {}; state.pendingImage = null;
+      await refresh(); render();
+      toast("הקלף שלך במשחק");
+    } catch (err) {
+      if (err.message === "game_locked") toast("המשחק כבר נסגר לעריכה", true);
+      else toast("אין קליטה כרגע. הטקסט שמור, נסו שוב עוד רגע", true);
+    }
+  };
+}
+
+/* ----- הקלפים ----- */
+function renderCards() {
+  if (state.phase === "submitting") {
+    const missing = Math.max(0, state.participantsCount - state.placesCount);
+    $("#screen").innerHTML = `
+      <div class="deck-scene">
+        <h2><span class="mark">הקלפים עוד הפוכים</span></h2>
+        <div class="deck">
+          <div class="cardback"></div>
+          <div class="cardback"></div>
+          <div class="cardback"><span class="q">?</span></div>
+        </div>
+        <div class="bignum">${state.placesCount}</div>
+        <p style="font-weight:900">קלפים כבר במשחק</p>
+        <p class="soft" style="margin-top:14px">${state.placesCount > 0 && missing > 0 ? `עוד ${missing} משתתפים באמצע כתיבה.` : ""}
+        כשכולם ימלאו, המנחות יחשפו את הקלפים ונתחיל לזהות.</p>
+        ${!store.mine ? `<p style="margin-top:18px;font-weight:900;color:var(--coral)">הקלף שלך עוד לא כאן. קדימה, למסך "המקום שלי".</p>` : ""}
+      </div>`;
+    return;
+  }
+  const others = state.places.filter(p => !isMine(p));
+  const done = state.guesses.length;
+  const pct = others.length ? Math.round(done / others.length * 100) : 0;
+  const cards = state.places.map((p, i) => {
+    const mine = isMine(p);
+    const g = state.guesses.find(g => g.place_id === p.id);
+    const revealedAuthor = state.phase === "revealed" && p.author_id ? nameOf(p.author_id) : null;
+    const tag = revealedAuthor ? `<span class="tag author">${esc(revealedAuthor)}</span>`
+      : mine ? `<span class="tag mine">הקלף שלך</span>`
+      : g ? `<span class="tag done">✓ ${esc(nameOf(g.guessed_author_id))}</span>`
+      : `<span class="tag todo">מי זה?</span>`;
+    const media = p.image_url
+      ? `<div class="img" style="background-image:url('${esc(p.image_url)}')"></div>`
+      : `<div class="blockimg" style="background:${colorFor(p.id)}">${ripple(64, "rgba(255,255,255,0.95)", 4)}</div>`;
+    return `<button class="gcard" data-place="${p.id}" style="animation-delay:${Math.min(i * 0.05, 0.8)}s">${media}
+      <div class="body"><span class="title">${esc(p.title)}</span>${tag}</div></button>`;
+  }).join("");
+  $("#screen").innerHTML = `
+    <div class="head"><h2><span class="mark">הקלפים</span></h2></div>
+    ${state.phase === "guessing" ? `
+    <div class="bar-wrap">
+      <div class="bar-label"><span>זיהית ${done} מתוך ${others.length}</span><span>${pct}%</span></div>
+      <div class="bar"><div class="fill ${done ? "" : "empty"}" style="width:${pct}%"></div></div>
+    </div>` : ""}
+    ${state.places.length ? `<div class="grid">${cards}</div>`
+      : `<div class="waiting">${ripple(80, "var(--soft)")}<p class="soft" style="margin-top:10px">עוד אין קלפים במשחק.</p></div>`}
+  `;
+  document.querySelectorAll(".gcard").forEach(c => c.onclick = () => openPlace(c.dataset.place));
+}
+
+function openPlace(placeId) {
+  const p = state.places.find(x => x.id === placeId);
+  if (!p) return;
+  const mine = isMine(p);
+  const myGuess = state.guesses.find(g => g.place_id === p.id);
+  const canGuess = !mine && state.phase === "guessing";
+  const revealedAuthor = state.phase === "revealed" && p.author_id ? nameOf(p.author_id) : null;
+  const options = state.participants.filter(x => x.id !== store.id);
+  const media = p.image_url
+    ? `<div class="hero" style="background-image:url('${esc(p.image_url)}')"></div>`
+    : `<div class="hero blockimg" style="background:${colorFor(p.id)}">${ripple(90, "rgba(255,255,255,0.95)", 4)}</div>`;
+  const ov = $("#overlay");
+  ov.innerHTML = `<div class="inner">
+    <div class="top"><button class="close-x" id="closeOv">✕ סגירה</button></div>
+    ${media}
+    <h2>${esc(p.title)}</h2>
+    ${revealedAuthor ? `<p class="kicker" style="color:var(--coral);margin-top:6px">המקום של ${esc(revealedAuthor)}</p>` : ""}
+    <p class="story">${esc(p.story)}</p>
+    ${mine && !revealedAuthor ? `<p class="hint" style="margin-top:20px">זה הקלף שלך. סקרנים לדעת כמה יזהו אותו.</p>` : ""}
+    ${canGuess ? `
+      <label style="margin-top:30px">מי לדעתך כתב את זה?</label>
+      <p class="hint">מותר ואף רצוי לקום ולשאול אנשים.</p>
+      <input type="text" class="search" id="gSearch" placeholder="חיפוש שם..." style="margin-top:12px">
+      <div class="guess-list" id="gList"></div>` : ""}
+    ${!canGuess && !mine && !revealedAuthor && myGuess ? `<p class="hint" style="margin-top:20px">הזיהוי שלך: ${esc(nameOf(myGuess.guessed_author_id))}.</p>` : ""}
+  </div>`;
+  ov.className = "overlay on";
+  ov.scrollTop = 0;
+  $("#closeOv").onclick = () => { ov.className = "overlay"; render(); };
+  if (canGuess) {
+    const list = $("#gList");
+    const draw = q => {
+      const rows = options.filter(o => !q || o.name.includes(q));
+      list.innerHTML = rows.map(o =>
+        `<button data-id="${o.id}" class="${myGuess?.guessed_author_id === o.id ? "picked" : ""}">${esc(o.name)}</button>`).join("")
+        || `<p class="hint">אין שם כזה ברשימה</p>`;
+      list.querySelectorAll("button").forEach(b => b.onclick = async () => {
+        try {
+          await rpc("mekomi_guess", { p_guesser: store.id, p_place: p.id, p_guessed: b.dataset.id });
+          const g = state.guesses.find(g => g.place_id === p.id);
+          if (g) g.guessed_author_id = b.dataset.id;
+          else state.guesses.push({ place_id: p.id, guessed_author_id: b.dataset.id });
+          list.querySelectorAll("button").forEach(x => x.className = "");
+          b.className = "picked";
+          toast(`נרשם: ${b.textContent}`);
+        } catch { toast("אין קליטה כרגע. נסו שוב עוד רגע", true); }
+      });
+    };
+    draw("");
+    $("#gSearch").oninput = e => draw(e.target.value.trim());
+  }
+}
+
+/* ----- החשיפה ----- */
+function renderReveal() {
+  if (state.phase !== "revealed") {
+    $("#screen").innerHTML = `<div class="waiting">
+      ${ripple(96)}
+      <h2 style="margin-top:14px"><span class="mark">${state.phase === "guessing" ? "עוד מזהים" : "עוד לא"}</span></h2>
+      <p class="soft" style="margin-top:12px">${state.phase === "guessing"
+        ? "חשיפת השמות תגיע בסוף הסמינר, במעמד חגיגי. בינתיים: לקרוא, לזהות, ולדבר עם אנשים."
+        : "קודם כולם ממלאים קלף, אחר כך מזהים, ורק בסוף חושפים שמות."}</p>
+    </div>`;
+    return;
+  }
+  confetti();
+  const correct = state.guesses.filter(g => {
+    const p = state.places.find(x => x.id === g.place_id);
+    return p && p.author_id === g.guessed_author_id;
+  }).length;
+  const total = state.places.filter(p => p.author_id !== store.id).length;
+  const myPlace = state.places.find(p => p.author_id === store.id);
+  const guessedMe = myPlace
+    ? state.allGuesses.filter(g => g.place_id === myPlace.id && g.guessed_author_id === store.id).length
+    : 0;
+  const byGuesser = {};
+  state.allGuesses.forEach(g => {
+    const p = state.places.find(x => x.id === g.place_id);
+    if (p && p.author_id === g.guessed_author_id) byGuesser[g.guesser_id] = (byGuesser[g.guesser_id] || 0) + 1;
+  });
+  const champ = Object.entries(byGuesser).sort((a, b) => b[1] - a[1])[0];
+  const wrongByPlace = {};
+  state.allGuesses.forEach(g => {
+    const p = state.places.find(x => x.id === g.place_id);
+    if (p && p.author_id !== g.guessed_author_id) wrongByPlace[g.place_id] = (wrongByPlace[g.place_id] || 0) + 1;
+  });
+  const trickiest = Object.entries(wrongByPlace).sort((a, b) => b[1] - a[1])[0];
+  const trickyPlace = trickiest ? state.places.find(p => p.id === trickiest[0]) : null;
+
+  $("#screen").innerHTML = `
+    <h2><span class="mark">החשיפה</span> 🎉</h2>
+    <div class="stat-hero" style="margin-top:20px">
+      <div class="big">${correct} מתוך ${total}</div>
+      <div style="font-weight:900">מקומות שזיהית נכון</div>
+    </div>
+    <div class="stat-row">
+      <div class="stat"><div class="n">${guessedMe}</div><div class="t">זיהו את המקום שלך</div></div>
+      <div class="stat"><div class="n">${state.places.length}</div><div class="t">קלפים במשחק</div></div>
+    </div>
+    ${champ ? `<div class="stat wide"><div class="t">🏆 אלוף הזיהויים</div><div class="name">${esc(nameOf(champ[0]))} · ${champ[1] === 1 ? "זיהוי נכון אחד" : champ[1] + " זיהויים נכונים"}</div></div>` : ""}
+    ${trickyPlace ? `<div class="stat wide"><div class="t">🎭 הקלף שהכי הרבה טעו בו</div><div class="name">${esc(trickyPlace.title)}</div></div>` : ""}
+    <h2 style="font-size:1.4rem;margin:8px 0 14px">כל המקומות והאנשים</h2>
+    <div class="grid">${state.places.map((p, i) => {
+      const media = p.image_url
+        ? `<div class="img" style="background-image:url('${esc(p.image_url)}')"></div>`
+        : `<div class="blockimg" style="background:${colorFor(p.id)}">${ripple(64, "rgba(255,255,255,0.95)", 4)}</div>`;
+      return `<button class="gcard" data-place="${p.id}" style="animation-delay:${Math.min(i * 0.07, 1.4)}s">
+        ${media}<div class="body"><span class="title">${esc(p.title)}</span><span class="tag author">${esc(nameOf(p.author_id))}</span></div></button>`;
+    }).join("")}</div>`;
+  document.querySelectorAll(".gcard").forEach(c => c.onclick = () => openPlace(c.dataset.place));
+}
+
+/* ----- מסך המנחות ----- */
+const PHASES = [
+  { key: "submitting", num: "1", title: "מילוי הקלפים", desc: "כל אחד כותב מקום. הקלפים והשמות עוד חסויים" },
+  { key: "guessing", num: "2", title: "חשיפת הקלפים", desc: "קוראים, מזהים, מדברים עם אנשים" },
+  { key: "revealed", num: "3", title: "חשיפת השמות", desc: "רגע האמת וסטטיסטיקות" }
+];
+
+function renderAdmin() {
+  if (!state.admin) {
+    $("#app").innerHTML = `
+      <div class="join">
+        ${ripple(80)}
+        <h2 style="margin-top:10px">מסך המנחות</h2>
+        <form id="pinForm" style="text-align:right">
+          <label for="pin">קוד מנחה</label>
+          <input type="tel" id="pin" maxlength="8" inputmode="numeric" autocomplete="off">
+          <button class="btn" type="submit">כניסה</button>
+        </form>
+      </div>`;
+    $("#pinForm").onsubmit = async e => {
+      e.preventDefault();
+      try {
+        state.admin = { pin: $("#pin").value.trim() };
+        state.admin.status = await rpc("mekomi_admin_status", { p_pin: state.admin.pin });
+        renderAdmin();
+      } catch { state.admin = null; toast("קוד לא נכון", true); }
+    };
+    return;
+  }
+  const s = state.admin.status;
+  const submitted = s.participants.filter(p => p.submitted).length;
+  $("#app").innerHTML = `
+    <div class="screen on">
+      <p class="kicker" style="color:var(--coral)">מסך המנחות · רותם וצופית</p>
+      <h2><span class="mark">מקומי</span></h2>
+      <div class="stepper">
+        ${PHASES.map(ph => `<div class="step ${s.phase === ph.key ? "now" : ""}">
+          <span class="dot">${ph.num}</span>
+          <span><b>${ph.title}</b><br><span class="soft" style="font-size:0.85rem">${ph.desc}</span></span>
+        </div>`).join("")}
+      </div>
+      <div class="stat-row">
+        <div class="stat"><div class="n">${submitted}</div><div class="t">מילאו קלף</div></div>
+        <div class="stat"><div class="n">${s.participants.length}</div><div class="t">נכנסו למשחק</div></div>
+      </div>
+      ${s.phase === "submitting" ? `<button class="btn teal" id="toGuessing">חושפים את הקלפים ←</button>` : ""}
+      ${s.phase === "guessing" ? `<button class="btn coral" id="toRevealed">חושפים את השמות 🎉</button>
+        <button class="btn ghost" id="backSubmitting">חזרה לשלב המילוי</button>` : ""}
+      ${s.phase === "revealed" ? `<div class="success-note">השמות נחשפו. שווה להקרין את מסך החשיפה במליאה.</div>
+        <button class="btn ghost" id="backGuessing" style="margin-top:14px">חזרה לשלב הקלפים (ביטול חשיפה)</button>` : ""}
+      <button class="btn ghost" id="refreshBtn">רענון נתונים</button>
+      <table>
+        <tr><th>שם</th><th>מילא קלף</th><th>זיהויים</th></tr>
+        ${s.participants.map(p => `<tr>
+          <td>${esc(p.name)}</td>
+          <td class="${p.submitted ? "yes" : "no"}">${p.submitted ? "✓" : "✕"}</td>
+          <td>${p.guesses}</td></tr>`).join("")}
+      </table>
+    </div>`;
+  const setPhase = async (phase, confirmMsg) => {
+    if (confirmMsg && !confirm(confirmMsg)) return;
+    try {
+      await rpc("mekomi_set_phase", { p_pin: state.admin.pin, p_phase: phase });
+      state.admin.status = await rpc("mekomi_admin_status", { p_pin: state.admin.pin });
+      renderAdmin();
+      toast("בוצע");
+    } catch { toast("משהו השתבש, נסו שוב", true); }
+  };
+  $("#toGuessing") && ($("#toGuessing").onclick = () => setPhase("guessing", "לחשוף את הקלפים? מרגע זה כולם רואים את המקומות ואת רשימת השמות."));
+  $("#toRevealed") && ($("#toRevealed").onclick = () => setPhase("revealed", "רגע האמת: לחשוף את כל השמות?"));
+  $("#backSubmitting") && ($("#backSubmitting").onclick = () => setPhase("submitting"));
+  $("#backGuessing") && ($("#backGuessing").onclick = () => setPhase("guessing", "לבטל את חשיפת השמות ולחזור לשלב הקלפים?"));
+  $("#refreshBtn").onclick = async () => {
+    state.admin.status = await rpc("mekomi_admin_status", { p_pin: state.admin.pin });
+    renderAdmin();
+  };
+}
+
+/* ===== תמונות ===== */
+function shrink(file) {
+  return new Promise((res, rej) => {
+    const img = new Image();
+    img.onload = () => {
+      const max = 1200;
+      const k = Math.min(1, max / Math.max(img.width, img.height));
+      const cv = document.createElement("canvas");
+      cv.width = Math.round(img.width * k);
+      cv.height = Math.round(img.height * k);
+      cv.getContext("2d").drawImage(img, 0, 0, cv.width, cv.height);
+      res(cv.toDataURL("image/jpeg", 0.8));
+    };
+    img.onerror = rej;
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+async function upload(dataUrl) {
+  const blob = await (await fetch(dataUrl)).blob();
+  const name = `${store.id}-${Date.now()}.jpg`;
+  const r = await fetch(`${SB_URL}/storage/v1/object/mekomi-images/${name}`, {
+    method: "POST",
+    headers: { "apikey": SB_KEY, "Authorization": "Bearer " + SB_KEY, "Content-Type": "image/jpeg" },
+    body: blob
+  });
+  if (!r.ok) throw new Error("upload");
+  return `${SB_URL}/storage/v1/object/public/mekomi-images/${name}`;
+}
+
+/* ===== אתחול ===== */
+window.addEventListener("hashchange", render);
+(async function init() {
+  $("#app").innerHTML = `<div style="padding-top:30dvh;text-align:center">${ripple(96)}</div>`;
+  try { await refresh(); } catch {}
+  render();
+})();
+</script>
+</body>
+</html>
