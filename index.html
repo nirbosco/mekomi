@@ -125,7 +125,8 @@
   .gcard:active { transform: scale(0.98); }
   @keyframes flipin { from { opacity: 0; transform: perspective(700px) rotateY(60deg); } to { opacity: 1; transform: none; } }
   .gcard .img { aspect-ratio: 4/3; background-size: cover; background-position: center; border-bottom: 1px solid var(--line); }
-  .gcard .blockimg { aspect-ratio: 4/3; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: center; }
+  .gcard .blockimg { aspect-ratio: 4/3; border-bottom: 1px solid var(--line); position: relative; overflow: hidden; }
+  .rf { position: absolute; top: -12%; right: -16%; width: 132%; height: 132%; pointer-events: none; }
   .gcard .body { padding: 10px 12px 12px; }
   .gcard .title { font-weight: 800; font-size: 1.02rem; line-height: 1.25; display: block; }
   .tag {
@@ -141,13 +142,12 @@
   .deck-scene { text-align: center; padding: 20px 0 10px; }
   .deck { position: relative; width: 200px; height: 260px; margin: 22px auto 26px; }
   .cardback {
-    position: absolute; inset: 0; border-radius: 20px;
-    display: flex; align-items: center; justify-content: center;
+    position: absolute; inset: 0; border-radius: 20px; overflow: hidden;
     border: 1px solid var(--line);
   }
-  .deck .cardback:nth-child(1) { transform: rotate(-7deg); background: var(--tint); }
-  .deck .cardback:nth-child(2) { transform: rotate(5deg); background: #e6fbf9; }
-  .deck .cardback:nth-child(3) { background: var(--card); box-shadow: 0 10px 24px rgba(10,19,48,0.12); animation: bob 2.6s ease-in-out infinite; }
+  .deck .cardback:nth-child(1) { transform: rotate(-8deg); background: var(--tint); }
+  .deck .cardback:nth-child(2) { transform: rotate(6deg); background: #e6fbf9; }
+  .deck .cardback:nth-child(3) { background: var(--blue); border-color: var(--ink); box-shadow: 0 12px 26px rgba(0,70,255,0.28); animation: bob 2.6s ease-in-out infinite; }
   @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
   .bignum { font-size: 3.2rem; font-weight: 800; line-height: 1.1; color: var(--blue); }
 
@@ -157,7 +157,7 @@
   .overlay .inner { max-width: 640px; margin: 0 auto; padding: 14px 18px 60px; }
   .overlay .top { display: flex; justify-content: flex-end; }
   .overlay .hero { border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 1px 3px rgba(10,19,48,0.06); aspect-ratio: 16/10; background-size: cover; background-position: center; margin: 10px 0 20px; }
-  .overlay .hero.blockimg { display: flex; align-items: center; justify-content: center; }
+  .overlay .hero.blockimg { position: relative; overflow: hidden; }
   .overlay .story { font-size: 1.12rem; margin-top: 14px; white-space: pre-wrap; }
   .close-x { background: var(--card); border: 1px solid var(--line); border-radius: 999px; font-weight: 600; padding: 8px 18px; color: var(--soft); }
   .guess-list { margin-top: 12px; display: grid; gap: 8px; }
@@ -326,19 +326,27 @@ function toast(msg, err) {
   t._h = setTimeout(() => t.className = "", 2600);
 }
 
-/* אדוות משולשות, על פי הצורניות של אדוות */
-function rippleTri(size, color, rings) {
-  const c = color || "#2882f0";
-  const n = rings || 4;
-  const tri = "M 30,25 L 70,25 Q 82,25 76,35 L 56,70 Q 50,80 44,70 L 24,35 Q 18,25 30,25 Z";
-  let paths = "";
+/* צורניות אדוות: משולש מעוגל א-סימטרי ונטוי, קווי מתאר אורגניים שמתכנסים לנקודה עליונה */
+const RIPPLE_BASE = "M45,92 C33,81 18,67 13,51 C10,41 13,31 23,26 C36,19 54,18 68,21 C80,23 88,30 86,42 C84,57 75,73 63,82 C56,88 51,91 45,92 Z";
+function rippleLayers(color, n, sw, baseOp) {
+  const fx = 50, fy = 44;
+  let g = "";
   for (let i = 0; i < n; i++) {
-    const s = 1 - i * (0.82 / n);
-    const op = 1 - i * (0.6 / n);
-    paths += `<g transform="translate(50 51) scale(${s.toFixed(3)}) translate(-50 -51)">
-      <path d="${tri}" fill="none" stroke="${c}" stroke-width="${(2.4 / s).toFixed(2)}" opacity="${op.toFixed(2)}"/></g>`;
+    const t = n > 1 ? i / (n - 1) : 0;
+    const s = 1 - t * 0.9;
+    const rot = t * 9;
+    const op = (baseOp * (1 - t * 0.42)).toFixed(2);
+    g += `<g transform="rotate(${rot.toFixed(1)} ${fx} ${fy}) translate(${fx} ${fy}) scale(${s.toFixed(3)}) translate(${-fx} ${-fy})"><path d="${RIPPLE_BASE}" fill="none" stroke="${color}" stroke-width="${(sw / s).toFixed(2)}" stroke-linejoin="round" opacity="${op}"/></g>`;
   }
-  return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" aria-hidden="true">${paths}</svg>`;
+  return g;
+}
+/* סמל אדוות במידה קבועה, לנקודות קטנות */
+function rippleTri(size, color, rings) {
+  return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" fill="none" aria-hidden="true">${rippleLayers(color || "#2882f0", rings || 6, 1.7, 1)}</svg>`;
+}
+/* מילוי אדוות מלא ומוסט לפינה, לגב קלף ולכרטיס בלי תמונה */
+function rippleFill(color, baseOp) {
+  return `<svg class="rf" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" fill="none" aria-hidden="true">${rippleLayers(color || "#2882f0", 8, 1.5, baseOp == null ? 1 : baseOp)}</svg>`;
 }
 
 function confetti() {
@@ -508,9 +516,9 @@ function renderCards() {
       <div class="deck-scene">
         <h2>הקלפים עוד הפוכים</h2>
         <div class="deck">
-          <div class="cardback"></div>
-          <div class="cardback"></div>
-          <div class="cardback">${rippleTri(150, "#2882f0", 5)}</div>
+          <div class="cardback">${rippleFill("var(--sky)", 0.5)}</div>
+          <div class="cardback">${rippleFill("var(--turq)", 0.5)}</div>
+          <div class="cardback">${rippleFill("#ffffff", 0.8)}</div>
         </div>
         <div class="bignum">${state.placesCount}</div>
         <p style="font-weight:600">קלפים כבר במשחק</p>
@@ -533,7 +541,7 @@ function renderCards() {
       : `<span class="tag todo">מי זה?</span>`;
     const media = p.image_url
       ? `<div class="img" style="background-image:url('${esc(p.image_url)}')"></div>`
-      : `<div class="blockimg" style="background:${colorFor(p.id)}12">${rippleTri(84, colorFor(p.id), 4)}</div>`;
+      : `<div class="blockimg" style="background:${colorFor(p.id)}14">${rippleFill(colorFor(p.id), 0.85)}</div>`;
     return `<button class="gcard" data-place="${p.id}" style="animation-delay:${Math.min(i * 0.05, 0.8)}s">${media}
       <div class="body"><span class="title">${esc(p.title)}</span>${tag}</div></button>`;
   }).join("");
@@ -560,7 +568,7 @@ function openPlace(placeId) {
   const options = state.participants.filter(x => x.id !== store.id);
   const media = p.image_url
     ? `<div class="hero" style="background-image:url('${esc(p.image_url)}')"></div>`
-    : `<div class="hero blockimg" style="background:${colorFor(p.id)}12">${rippleTri(120, colorFor(p.id), 5)}</div>`;
+    : `<div class="hero blockimg" style="background:${colorFor(p.id)}14">${rippleFill(colorFor(p.id), 0.85)}</div>`;
   const ov = $("#overlay");
   ov.innerHTML = `<div class="inner">
     <div class="top"><button class="close-x" id="closeOv">✕ סגירה</button></div>
@@ -655,7 +663,7 @@ function renderReveal() {
     <div class="grid">${state.places.map((p, i) => {
       const media = p.image_url
         ? `<div class="img" style="background-image:url('${esc(p.image_url)}')"></div>`
-        : `<div class="blockimg" style="background:${colorFor(p.id)}12">${rippleTri(84, colorFor(p.id), 4)}</div>`;
+        : `<div class="blockimg" style="background:${colorFor(p.id)}14">${rippleFill(colorFor(p.id), 0.85)}</div>`;
       return `<button class="gcard" data-place="${p.id}" style="animation-delay:${Math.min(i * 0.07, 1.4)}s">
         ${media}<div class="body"><span class="title">${esc(p.title)}</span><span class="tag author">${esc(nameOf(p.author_id))}</span></div></button>`;
     }).join("")}</div>`;
