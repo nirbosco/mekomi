@@ -3,234 +3,243 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>מקומי</title>
+<title>מקומי · אדוות</title>
+<link rel="icon" type="image/png" href="advot-logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #FAF3E7;
-    --ink: #14232B;
-    --coral: #FF5748;
-    --teal: #00A88E;
-    --yellow: #FFC53D;
-    --plum: #8E4D9E;
-    --blue: #2D7DD2;
-    --soft: #6B7A80;
-    --card: #FFFDF8;
+    --bg: #f0f0f0;
+    --card: #ffffff;
+    --ink: #0a1330;
+    --blue: #0046ff;
+    --advot: #2882f0;
+    --sky: #0fb4f5;
+    --turq: #23d7cd;
+    --purple: #6437eb;
+    --soft: #5b6478;
+    --line: #dde1ea;
+    --tint: #e9f0ff;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
   body {
-    font-family: 'Heebo', -apple-system, 'Segoe UI', Arial, sans-serif;
+    font-family: 'Rubik', -apple-system, 'Segoe UI', Arial, sans-serif;
     background: var(--bg);
     color: var(--ink);
     min-height: 100dvh;
     line-height: 1.55;
-    background-image: radial-gradient(circle, rgba(20,35,43,0.06) 2px, transparent 2px);
-    background-size: 26px 26px;
   }
-  #app { max-width: 640px; margin: 0 auto; padding: 0 18px 110px; }
+  #app { max-width: 640px; margin: 0 auto; padding: 0 18px 108px; }
 
-  /* ===== typography ===== */
-  h1 { font-size: clamp(3.4rem, 16vw, 5rem); font-weight: 900; line-height: 1; letter-spacing: -0.02em; }
-  h2 { font-size: clamp(1.7rem, 8vw, 2.4rem); font-weight: 900; line-height: 1.1; }
-  .mark { background: var(--yellow); padding: 0 10px 4px; border-radius: 8px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
-  .kicker { font-weight: 700; font-size: 0.95rem; }
+  h1 { font-size: clamp(3rem, 14vw, 4.2rem); font-weight: 800; line-height: 1.05; letter-spacing: -0.02em; color: var(--blue); }
+  h2 { font-size: clamp(1.6rem, 7.5vw, 2.1rem); font-weight: 800; line-height: 1.15; }
+  .kicker { font-weight: 600; font-size: 0.92rem; color: var(--advot); }
   .soft { color: var(--soft); }
 
-  /* ===== flat game pieces ===== */
-  .piece {
-    background: var(--card);
-    border: 3px solid var(--ink);
-    border-radius: 18px;
-    box-shadow: -6px 6px 0 var(--ink);
+  .brandbar { display: flex; align-items: center; justify-content: space-between; padding: 16px 2px 0; }
+  .brandbar img { height: 34px; display: block; }
+
+  /* ===== surfaces ===== */
+  .panel {
+    background: var(--card); border: 1px solid var(--line); border-radius: 18px;
+    box-shadow: 0 1px 3px rgba(10,19,48,0.06);
   }
+
+  /* ===== buttons & inputs ===== */
   button { font: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
   .btn {
-    display: block; width: 100%; padding: 15px 18px;
-    background: var(--yellow); color: var(--ink);
-    border: 3px solid var(--ink); border-radius: 16px;
-    box-shadow: -5px 5px 0 var(--ink);
-    font-size: 1.15rem; font-weight: 900;
-    transition: transform 0.08s, box-shadow 0.08s;
+    display: block; width: 100%; padding: 14px 22px;
+    background: var(--blue); color: #fff;
+    border: 0; border-radius: 999px;
+    font-size: 1.1rem; font-weight: 600;
+    transition: transform 0.1s, filter 0.15s;
   }
-  .btn:active { transform: translate(-3px, 3px); box-shadow: -1px 1px 0 var(--ink); }
-  .btn.coral { background: var(--coral); color: #fff; }
-  .btn.teal  { background: var(--teal); color: #fff; }
-  .btn.ghost { background: var(--card); box-shadow: -3px 3px 0 var(--ink); font-weight: 700; font-size: 1rem; }
-  .btn + .btn { margin-top: 14px; }
+  .btn:active { transform: scale(0.98); filter: brightness(0.92); }
+  .btn.advot { background: var(--advot); }
+  .btn.turq { background: var(--turq); color: var(--ink); }
+  .btn.outline { background: var(--card); color: var(--blue); border: 1.5px solid var(--blue); }
+  .btn.quiet { background: var(--card); color: var(--soft); border: 1px solid var(--line); font-weight: 500; font-size: 0.98rem; }
+  .btn + .btn { margin-top: 12px; }
   input[type="text"], input[type="tel"], textarea {
-    width: 100%; padding: 14px 16px; font: inherit; font-size: 1.05rem;
+    width: 100%; padding: 13px 16px; font: inherit; font-size: 1.05rem;
     background: var(--card); color: var(--ink);
-    border: 3px solid var(--ink); border-radius: 14px; outline: none;
-    box-shadow: -4px 4px 0 rgba(20,35,43,0.15);
+    border: 1.5px solid var(--line); border-radius: 14px; outline: none;
   }
-  input:focus, textarea:focus { box-shadow: -4px 4px 0 var(--teal); }
+  input:focus, textarea:focus { border-color: var(--advot); box-shadow: 0 0 0 3px rgba(40,130,240,0.15); }
   textarea { resize: vertical; min-height: 150px; }
-  label { display: block; font-weight: 900; margin: 24px 0 8px; font-size: 1.05rem; }
+  label { display: block; font-weight: 600; margin: 22px 0 8px; }
   .hint { font-size: 0.88rem; color: var(--soft); margin-top: 6px; }
   .counter { text-align: left; font-size: 0.8rem; color: var(--soft); margin-top: 4px; }
 
-  /* ===== ripple mark ===== */
-  .ripple { display: block; }
-
   /* ===== join ===== */
-  .join { padding-top: 7dvh; text-align: center; }
-  .join .logo { position: relative; display: inline-block; }
+  .join { padding-top: 5dvh; text-align: center; }
+  .join .logo { height: 64px; margin: 0 auto 18px; display: block; }
   .join .chip {
-    display: inline-block; margin-top: 14px; padding: 6px 18px;
-    background: var(--ink); color: var(--bg); border-radius: 99px;
-    font-weight: 700; font-size: 1.05rem; transform: rotate(-2deg);
+    display: inline-block; margin-top: 10px; padding: 5px 18px;
+    background: var(--tint); color: var(--blue); border: 1px solid rgba(0,70,255,0.25);
+    border-radius: 999px; font-weight: 600; font-size: 1rem;
   }
-  .join .intro { margin-top: 22px; font-size: 1.05rem; }
-  .join form { margin-top: 30px; text-align: right; background: var(--card); border: 3px solid var(--ink); border-radius: 20px; padding: 22px; box-shadow: -7px 7px 0 var(--ink); }
+  .join .intro { margin-top: 20px; font-size: 1.05rem; }
+  .join form { margin-top: 26px; text-align: right; padding: 22px; }
   .join form label { margin-top: 0; }
   .join .btn { margin-top: 18px; }
 
   /* ===== nav ===== */
   nav {
     position: fixed; bottom: 0; right: 0; left: 0; z-index: 20;
-    background: var(--card); border-top: 3px solid var(--ink);
+    background: var(--card); border-top: 1px solid var(--line);
     padding-bottom: env(safe-area-inset-bottom);
   }
   nav .wrap { display: flex; gap: 6px; width: 100%; max-width: 640px; margin: 0 auto; padding: 10px 12px; }
   nav button {
-    flex: 1; background: none; border: 3px solid transparent; border-radius: 14px;
-    color: var(--soft); padding: 8px 4px; font-size: 1rem; font-weight: 900;
+    flex: 1; background: none; border: 0; border-radius: 999px;
+    color: var(--soft); padding: 10px 4px; font-size: 0.98rem; font-weight: 600;
   }
-  nav button.on { background: var(--yellow); border-color: var(--ink); color: var(--ink); box-shadow: -3px 3px 0 var(--ink); }
+  nav button.on { background: var(--tint); color: var(--blue); }
 
   /* ===== screens ===== */
-  .screen { display: none; padding-top: 26px; }
+  .screen { display: none; padding-top: 20px; }
   .screen.on { display: block; animation: rise 0.25s ease; }
-  @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
-  .head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+  @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
 
-  /* ===== progress bar ===== */
-  .bar-wrap { margin: 0 0 20px; }
-  .bar-label { display: flex; justify-content: space-between; font-weight: 900; font-size: 0.95rem; margin-bottom: 6px; }
-  .bar { height: 18px; background: var(--card); border: 3px solid var(--ink); border-radius: 99px; overflow: hidden; }
-  .bar .fill { height: 100%; background: var(--teal); border-left: 3px solid var(--ink); transition: width 0.5s ease; min-width: 0; }
-  .bar .fill.empty { border-left: none; }
+  /* ===== progress ===== */
+  .bar-wrap { margin: 0 0 18px; }
+  .bar-label { display: flex; justify-content: space-between; font-weight: 600; font-size: 0.92rem; margin-bottom: 6px; color: var(--soft); }
+  .bar-label b { color: var(--ink); }
+  .bar { height: 12px; background: var(--card); border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+  .bar .fill { height: 100%; background: var(--advot); border-radius: 999px; transition: width 0.5s ease; }
 
   /* ===== cards ===== */
-  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   .gcard {
-    border: 3px solid var(--ink); border-radius: 18px; overflow: hidden;
-    background: var(--card); box-shadow: -5px 5px 0 var(--ink);
+    border: 1px solid var(--line); border-radius: 18px; overflow: hidden;
+    background: var(--card); box-shadow: 0 1px 3px rgba(10,19,48,0.06);
     cursor: pointer; text-align: right; padding: 0;
     display: flex; flex-direction: column;
-    transition: transform 0.08s, box-shadow 0.08s;
+    transition: transform 0.12s, box-shadow 0.12s;
     animation: flipin 0.45s ease backwards;
   }
-  .gcard:active { transform: translate(-3px, 3px); box-shadow: -1px 1px 0 var(--ink); }
-  @keyframes flipin { from { opacity: 0; transform: perspective(700px) rotateY(70deg); } to { opacity: 1; transform: none; } }
-  .gcard .img { aspect-ratio: 4/3; background-size: cover; background-position: center; border-bottom: 3px solid var(--ink); }
-  .gcard .blockimg { aspect-ratio: 4/3; border-bottom: 3px solid var(--ink); display: flex; align-items: center; justify-content: center; }
+  .gcard:active { transform: scale(0.98); }
+  @keyframes flipin { from { opacity: 0; transform: perspective(700px) rotateY(60deg); } to { opacity: 1; transform: none; } }
+  .gcard .img { aspect-ratio: 4/3; background-size: cover; background-position: center; border-bottom: 1px solid var(--line); }
+  .gcard .blockimg { aspect-ratio: 4/3; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: center; }
   .gcard .body { padding: 10px 12px 12px; }
-  .gcard .title { font-weight: 900; font-size: 1.05rem; line-height: 1.2; display: block; }
+  .gcard .title { font-weight: 800; font-size: 1.02rem; line-height: 1.25; display: block; }
   .tag {
-    display: inline-block; margin-top: 8px; font-size: 0.8rem; font-weight: 900;
-    padding: 2px 10px; border-radius: 99px; border: 2px solid var(--ink);
+    display: inline-block; margin-top: 8px; font-size: 0.78rem; font-weight: 600;
+    padding: 3px 12px; border-radius: 999px;
   }
-  .tag.mine { background: var(--ink); color: var(--bg); }
-  .tag.done { background: var(--teal); color: #fff; }
-  .tag.todo { background: var(--yellow); }
-  .tag.author { background: var(--coral); color: #fff; }
+  .tag.mine { background: var(--card); color: var(--blue); border: 1.5px solid var(--blue); }
+  .tag.done { background: var(--turq); color: var(--ink); }
+  .tag.todo { background: var(--blue); color: #fff; }
+  .tag.author { background: var(--advot); color: #fff; }
 
-  /* ===== face-down deck (שלב המילוי) ===== */
-  .deck-scene { text-align: center; padding: 26px 0 10px; }
-  .deck { position: relative; width: 190px; height: 250px; margin: 18px auto 26px; }
+  /* ===== face-down deck ===== */
+  .deck-scene { text-align: center; padding: 20px 0 10px; }
+  .deck { position: relative; width: 200px; height: 260px; margin: 22px auto 26px; }
   .cardback {
-    position: absolute; inset: 0; border: 3px solid var(--ink); border-radius: 18px;
-    background: var(--teal);
-    background-image: radial-gradient(circle at 50% 50%, transparent 0 18px, rgba(255,255,255,0.28) 18px 21px, transparent 21px 40px, rgba(255,255,255,0.2) 40px 43px, transparent 43px);
-    background-size: 96px 96px;
+    position: absolute; inset: 0; border-radius: 20px;
     display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--line);
   }
-  .cardback .q {
-    width: 74px; height: 74px; border-radius: 50%; background: var(--card);
-    border: 3px solid var(--ink); display: flex; align-items: center; justify-content: center;
-    font-size: 2.4rem; font-weight: 900;
-  }
-  .deck .cardback:nth-child(1) { transform: rotate(-7deg); background-color: var(--plum); }
-  .deck .cardback:nth-child(2) { transform: rotate(5deg); background-color: var(--coral); }
-  .deck .cardback:nth-child(3) { box-shadow: -6px 6px 0 var(--ink); animation: bob 2.6s ease-in-out infinite; }
+  .deck .cardback:nth-child(1) { transform: rotate(-7deg); background: var(--tint); }
+  .deck .cardback:nth-child(2) { transform: rotate(5deg); background: #e6fbf9; }
+  .deck .cardback:nth-child(3) { background: var(--card); box-shadow: 0 10px 24px rgba(10,19,48,0.12); animation: bob 2.6s ease-in-out infinite; }
   @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-  .bignum { font-size: 3.4rem; font-weight: 900; line-height: 1; }
+  .bignum { font-size: 3.2rem; font-weight: 800; line-height: 1.1; color: var(--blue); }
 
-  /* ===== overlay (קלף פתוח) ===== */
-  .overlay { position: fixed; inset: 0; z-index: 30; background: var(--bg); overflow-y: auto; display: none;
-    background-image: radial-gradient(circle, rgba(20,35,43,0.06) 2px, transparent 2px); background-size: 26px 26px; }
+  /* ===== overlay ===== */
+  .overlay { position: fixed; inset: 0; z-index: 30; background: var(--bg); overflow-y: auto; display: none; }
   .overlay.on { display: block; animation: rise 0.2s ease; }
   .overlay .inner { max-width: 640px; margin: 0 auto; padding: 14px 18px 60px; }
   .overlay .top { display: flex; justify-content: flex-end; }
-  .overlay .hero { border: 3px solid var(--ink); border-radius: 18px; box-shadow: -6px 6px 0 var(--ink); aspect-ratio: 16/10; background-size: cover; background-position: center; margin: 10px 0 22px; }
+  .overlay .hero { border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 1px 3px rgba(10,19,48,0.06); aspect-ratio: 16/10; background-size: cover; background-position: center; margin: 10px 0 20px; }
   .overlay .hero.blockimg { display: flex; align-items: center; justify-content: center; }
-  .overlay .story { font-size: 1.15rem; margin-top: 14px; white-space: pre-wrap; }
-  .close-x { background: var(--card); border: 3px solid var(--ink); border-radius: 12px; box-shadow: -3px 3px 0 var(--ink); font-weight: 900; padding: 8px 14px; }
-  .guess-list { margin-top: 12px; display: grid; gap: 10px; }
+  .overlay .story { font-size: 1.12rem; margin-top: 14px; white-space: pre-wrap; }
+  .close-x { background: var(--card); border: 1px solid var(--line); border-radius: 999px; font-weight: 600; padding: 8px 18px; color: var(--soft); }
+  .guess-list { margin-top: 12px; display: grid; gap: 8px; }
   .guess-list button {
-    text-align: right; padding: 12px 16px; background: var(--card);
-    border: 3px solid var(--ink); border-radius: 14px; font-size: 1rem; font-weight: 700;
-    box-shadow: -3px 3px 0 rgba(20,35,43,0.18);
+    text-align: right; padding: 12px 18px; background: var(--card);
+    border: 1.5px solid var(--line); border-radius: 999px; font-size: 1rem; font-weight: 500;
   }
-  .guess-list button.picked { background: var(--teal); color: #fff; box-shadow: -3px 3px 0 var(--ink); }
+  .guess-list button.picked { background: var(--blue); border-color: var(--blue); color: #fff; font-weight: 600; }
 
   /* ===== reveal ===== */
   .stat-hero {
-    border: 3px solid var(--ink); border-radius: 20px; box-shadow: -7px 7px 0 var(--ink);
-    padding: 26px 22px; color: #fff; background: var(--coral); margin-bottom: 16px;
-    transform: rotate(-1deg);
+    border-radius: 20px; padding: 26px 22px; color: #fff; background: var(--blue);
+    margin-bottom: 14px;
   }
-  .stat-hero .big { font-size: 3.4rem; font-weight: 900; line-height: 1; }
-  .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-  .stat { border: 3px solid var(--ink); border-radius: 18px; padding: 14px 16px; background: var(--card); box-shadow: -4px 4px 0 var(--ink); }
-  .stat .n { font-size: 1.9rem; font-weight: 900; }
-  .stat .t { font-size: 0.85rem; color: var(--soft); font-weight: 700; }
-  .stat.wide { margin-bottom: 16px; }
-  .stat .name { font-weight: 900; font-size: 1.2rem; }
+  .stat-hero .big { font-size: 3.2rem; font-weight: 800; line-height: 1.1; }
+  .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  .stat { border: 1px solid var(--line); border-radius: 18px; padding: 14px 16px; background: var(--card); }
+  .stat .n { font-size: 1.8rem; font-weight: 800; color: var(--blue); }
+  .stat .t { font-size: 0.85rem; color: var(--soft); font-weight: 600; }
+  .stat.wide { margin-bottom: 14px; }
+  .stat .name { font-weight: 800; font-size: 1.15rem; }
 
-  /* confetti */
   .confetti { position: fixed; inset: 0; pointer-events: none; z-index: 40; overflow: hidden; }
-  .confetti i {
-    position: absolute; top: -4vh; width: 12px; height: 18px; border: 2px solid var(--ink);
-    animation: fall 3.2s ease-in forwards;
-  }
+  .confetti i { position: absolute; top: -4vh; width: 10px; height: 16px; border-radius: 3px; animation: fall 3.2s ease-in forwards; }
   @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity: 0.9; } }
 
   /* ===== admin ===== */
-  .stepper { display: grid; gap: 12px; margin: 22px 0; }
-  .step { border: 3px solid var(--ink); border-radius: 16px; padding: 12px 16px; background: var(--card); display: flex; align-items: center; gap: 12px; opacity: 0.55; }
-  .step.now { opacity: 1; box-shadow: -5px 5px 0 var(--ink); background: var(--yellow); }
-  .step .dot { width: 34px; height: 34px; border-radius: 50%; border: 3px solid var(--ink); background: var(--card); display: flex; align-items: center; justify-content: center; font-weight: 900; flex: none; }
-  .step.now .dot { background: var(--ink); color: var(--yellow); }
-  table { width: 100%; border-collapse: collapse; margin-top: 18px; }
-  td, th { padding: 10px 6px; border-bottom: 2px solid rgba(20,35,43,0.15); text-align: right; font-size: 0.95rem; }
-  th { color: var(--soft); font-size: 0.82rem; }
-  .yes { color: var(--teal); font-weight: 900; }
-  .no { color: var(--coral); font-weight: 900; }
+  .admin-head { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+  .admin-head img { height: 30px; }
+  .phases { display: flex; gap: 8px; margin: 18px 0 8px; }
+  .phase-pill {
+    flex: 1; text-align: center; padding: 10px 6px; border-radius: 14px;
+    border: 1px solid var(--line); background: var(--card); color: var(--soft);
+    font-size: 0.85rem; font-weight: 600; line-height: 1.3;
+  }
+  .phase-pill.now { background: var(--blue); border-color: var(--blue); color: #fff; }
+  .phase-pill.past { border-color: var(--turq); color: var(--turq); }
+  .whatnow { padding: 14px 18px; margin: 10px 0 16px; font-size: 0.95rem; }
+  .whatnow b { color: var(--blue); }
+  .chips { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+  .chip-stat { text-align: center; border: 1px solid var(--line); border-radius: 16px; background: var(--card); padding: 10px 6px; }
+  .chip-stat .n { font-size: 1.6rem; font-weight: 800; color: var(--blue); line-height: 1.2; }
+  .chip-stat .t { font-size: 0.78rem; color: var(--soft); font-weight: 600; }
+  .missing { padding: 14px 18px; margin-bottom: 16px; }
+  .missing .names { color: var(--soft); font-size: 0.95rem; margin: 6px 0 10px; }
+  .copybtn { background: var(--tint); color: var(--blue); border: 0; border-radius: 999px; padding: 8px 18px; font-weight: 600; font-size: 0.9rem; }
+  table { width: 100%; border-collapse: collapse; margin-top: 6px; }
+  td, th { padding: 9px 6px; border-bottom: 1px solid var(--line); text-align: right; font-size: 0.93rem; }
+  th { color: var(--soft); font-size: 0.8rem; font-weight: 600; }
+  .yes { color: var(--turq); font-weight: 800; }
+  .no { color: var(--advot); font-weight: 800; }
+  .del { background: none; border: 0; color: var(--soft); font-size: 1rem; padding: 4px 8px; }
+  .del:active { color: #d33; }
+  details.mod { margin-top: 18px; border: 1px solid var(--line); border-radius: 16px; background: var(--card); padding: 0 16px; }
+  details.mod summary { padding: 14px 0; font-weight: 600; cursor: pointer; color: var(--blue); list-style-position: inside; }
+  .modcard { display: flex; gap: 12px; padding: 12px 0; border-top: 1px solid var(--line); }
+  .modcard .thumb { width: 72px; height: 54px; border-radius: 10px; background: var(--tint); background-size: cover; background-position: center; flex: none; display: flex; align-items: center; justify-content: center; }
+  .modcard .who { font-size: 0.82rem; color: var(--advot); font-weight: 600; }
+  .modcard .ttl { font-weight: 800; font-size: 0.98rem; }
+  .modcard .snip { font-size: 0.85rem; color: var(--soft); }
+  .admin-actions { margin: 4px 0 18px; }
+  .autorefresh { text-align: center; font-size: 0.8rem; color: var(--soft); margin-top: 14px; }
 
   /* ===== toast ===== */
   #toast {
     position: fixed; bottom: 92px; right: 50%; transform: translateX(50%);
-    background: var(--ink); color: var(--bg); padding: 12px 22px;
-    border-radius: 14px; border: 3px solid var(--ink); box-shadow: -4px 4px 0 rgba(20,35,43,0.3);
-    font-weight: 900; z-index: 50; display: none; max-width: 90vw; text-align: center;
+    background: var(--ink); color: #fff; padding: 12px 24px;
+    border-radius: 999px; font-weight: 600; z-index: 50; display: none; max-width: 90vw; text-align: center;
+    box-shadow: 0 6px 18px rgba(10,19,48,0.25);
   }
   #toast.on { display: block; animation: rise 0.2s ease; }
-  #toast.err { background: var(--coral); color: #fff; }
+  #toast.err { background: var(--advot); }
 
   .success-note {
-    background: var(--teal); color: #fff; border: 3px solid var(--ink); border-radius: 16px;
-    box-shadow: -4px 4px 0 var(--ink); padding: 14px 18px; font-weight: 900; margin-top: 20px;
+    background: var(--tint); color: var(--blue); border: 1px solid rgba(0,70,255,0.25);
+    border-radius: 16px; padding: 13px 18px; font-weight: 600; margin-top: 18px;
   }
-  .success-note.coral { background: var(--coral); }
-  .waiting { text-align: center; padding: 40px 0; }
+  .success-note.warm { background: #e6fbf9; color: #0b7a72; border-color: rgba(35,215,205,0.5); }
+  .waiting { text-align: center; padding: 36px 0; }
   .imgpick { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
-  .imgpick .preview { width: 88px; height: 66px; border-radius: 12px; background: var(--card); background-size: cover; background-position: center; border: 3px solid var(--ink); flex: none; }
-  .imgpick .btn { width: auto; margin: 0; padding: 10px 16px; font-size: 1rem; }
+  .imgpick .preview { width: 88px; height: 66px; border-radius: 12px; background: var(--tint); background-size: cover; background-position: center; border: 1px solid var(--line); flex: none; }
+  .imgpick .btn { width: auto; margin: 0; padding: 9px 18px; font-size: 0.95rem; }
 </style>
 </head>
 <body>
@@ -266,7 +275,9 @@ const store = {
   get mine() { try { return JSON.parse(localStorage.getItem("mekomi_mine")); } catch { return null; } },
   set mine(v) { localStorage.setItem("mekomi_mine", JSON.stringify(v)); },
   get draft() { try { return JSON.parse(localStorage.getItem("mekomi_draft")) || {}; } catch { return {}; } },
-  set draft(v) { localStorage.setItem("mekomi_draft", JSON.stringify(v)); }
+  set draft(v) { localStorage.setItem("mekomi_draft", JSON.stringify(v)); },
+  get adminPin() { return localStorage.getItem("mekomi_admin_pin"); },
+  set adminPin(v) { localStorage.setItem("mekomi_admin_pin", v); }
 };
 
 const state = {
@@ -279,16 +290,18 @@ const state = {
   allGuesses: [],
   tab: "mine",
   pendingImage: null,
-  admin: null
+  admin: null,
+  adminTimer: null
 };
 
 /* ===== עזרים ===== */
 const $ = sel => document.querySelector(sel);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-const CARD_COLORS = ["var(--teal)", "var(--yellow)", "var(--plum)", "var(--blue)", "var(--coral)"];
+const CARD_COLORS = ["#2882f0", "#0fb4f5", "#23d7cd", "#6437eb", "#0046ff"];
 const colorFor = id => CARD_COLORS[[...id].reduce((a, c) => a + c.charCodeAt(0), 0) % CARD_COLORS.length];
 const nameOf = id => state.participants.find(x => x.id === id)?.name || "";
 const isMine = p => (state.phase === "revealed" && p.author_id) ? p.author_id === store.id : p.id === store.mine?.id;
+const LOGO = `<img src="advot-logo.png" alt="אדוות">`;
 
 function toast(msg, err) {
   const t = $("#toast");
@@ -298,18 +311,23 @@ function toast(msg, err) {
   t._h = setTimeout(() => t.className = "", 2600);
 }
 
-function ripple(size, color, weight) {
-  const c = color || "var(--coral)";
-  const w = weight || 3.5;
-  return `<svg class="ripple" width="${size}" height="${size}" viewBox="0 0 100 100" aria-hidden="true">
-    <circle cx="50" cy="50" r="11" fill="${c}" stroke="var(--ink)" stroke-width="${w}"/>
-    <circle cx="50" cy="50" r="28" fill="none" stroke="${c}" stroke-width="${w}"/>
-    <circle cx="50" cy="50" r="44" fill="none" stroke="${c}" stroke-width="${w}" opacity="0.55"/>
-  </svg>`;
+/* אדוות משולשות, על פי הצורניות של אדוות */
+function rippleTri(size, color, rings) {
+  const c = color || "#2882f0";
+  const n = rings || 4;
+  const tri = "M 30,25 L 70,25 Q 82,25 76,35 L 56,70 Q 50,80 44,70 L 24,35 Q 18,25 30,25 Z";
+  let paths = "";
+  for (let i = 0; i < n; i++) {
+    const s = 1 - i * (0.82 / n);
+    const op = 1 - i * (0.6 / n);
+    paths += `<g transform="translate(50 51) scale(${s.toFixed(3)}) translate(-50 -51)">
+      <path d="${tri}" fill="none" stroke="${c}" stroke-width="${(2.4 / s).toFixed(2)}" opacity="${op.toFixed(2)}"/></g>`;
+  }
+  return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" aria-hidden="true">${paths}</svg>`;
 }
 
 function confetti() {
-  const colors = ["#FF5748", "#00A88E", "#FFC53D", "#8E4D9E", "#2D7DD2"];
+  const colors = ["#0046ff", "#2882f0", "#0fb4f5", "#23d7cd", "#6437eb"];
   const box = document.createElement("div");
   box.className = "confetti";
   for (let i = 0; i < 28; i++) {
@@ -345,8 +363,11 @@ async function refresh() {
 }
 
 /* ===== ניתוב ===== */
+function isAdminRoute() { return location.hash.startsWith("#admin"); }
+
 function render() {
-  if (location.hash === "#admin") return renderAdmin();
+  if (!isAdminRoute() && state.adminTimer) { clearInterval(state.adminTimer); state.adminTimer = null; }
+  if (isAdminRoute()) return renderAdmin();
   if (!store.id) return renderJoin();
   renderMain();
 }
@@ -355,11 +376,12 @@ function render() {
 function renderJoin() {
   $("#app").innerHTML = `
     <div class="join">
-      <div class="logo">${ripple(110)}</div>
+      <div style="margin-bottom:6px">${rippleTri(84)}</div>
+      <img class="logo" src="advot-logo.png" alt="אדוות — מנהיגות מחוללת שינוי">
       <h1>מקומי</h1>
       <span class="chip">משנה מקום, מקום משני</span>
       <p class="intro">לכל אחת ואחד יש מקום שהוא חלק ממי שהם.<br>ננסה לגלות של מי כל מקום. מוכנים?</p>
-      <form id="joinForm">
+      <form id="joinForm" class="panel">
         <label for="jname">איך קוראים לך?</label>
         <input type="text" id="jname" autocomplete="name" placeholder="שם פרטי ומשפחה" maxlength="60" required>
         <button class="btn" type="submit">נכנסים למשחק</button>
@@ -383,6 +405,7 @@ function renderJoin() {
 function renderMain() {
   const tabs = [["mine", "המקום שלי"], ["cards", "הקלפים"], ["reveal", "החשיפה"]];
   $("#app").innerHTML = `
+    <div class="brandbar">${LOGO}<span class="kicker">מקומי · משנה מקום, מקום משני</span></div>
     <div class="screen on" id="screen"></div>
     <nav><div class="wrap">
       ${tabs.map(([k, t]) => `<button data-tab="${k}" class="${state.tab === k ? "on" : ""}">${t}</button>`).join("")}
@@ -404,11 +427,11 @@ function renderMine() {
   const d = store.draft;
   const locked = state.phase === "revealed";
   $("#screen").innerHTML = `
-    <p class="kicker" style="color:var(--coral)">שלום, ${esc(store.name)}</p>
-    <h2><span class="mark">המקום שלך</span></h2>
-    <p class="soft" style="margin-top:10px">מקום שאת או אתה מרגישים אליו שייכות. לא חייב להיות מקום פיזי.</p>
-    ${mine && !locked ? `<div class="success-note">הקלף שלך במשחק. אפשר לערוך עד חשיפת השמות.</div>` : ""}
-    ${locked ? `<div class="success-note coral">השמות נחשפו והמשחק הסתיים. תודה ששיחקתם.</div>` : ""}
+    <p class="kicker">שלום, ${esc(store.name)}</p>
+    <h2>המקום שלך</h2>
+    <p class="soft" style="margin-top:8px">מקום שאת או אתה מרגישים אליו שייכות. לא חייב להיות מקום פיזי.</p>
+    ${mine && !locked ? `<div class="success-note warm">הקלף שלך במשחק. אפשר לערוך עד חשיפת השמות.</div>` : ""}
+    ${locked ? `<div class="success-note">השמות נחשפו והמשחק הסתיים. תודה ששיחקתם.</div>` : ""}
     <form id="placeForm" ${locked ? "style='opacity:0.55;pointer-events:none'" : ""}>
       <label for="ptitle">שם המקום</label>
       <input type="text" id="ptitle" maxlength="80" placeholder="למשל: הסלע שמול הים" value="${esc(d.title ?? mine?.title ?? "")}">
@@ -418,11 +441,11 @@ function renderMine() {
       <label>תמונה (לא חובה)</label>
       <div class="imgpick">
         <div class="preview" id="imgPrev" ${mine?.image_url ? `style="background-image:url('${esc(mine.image_url)}')"` : ""}></div>
-        <button type="button" class="btn ghost" id="imgBtn">בחירת תמונה</button>
+        <button type="button" class="btn outline" id="imgBtn">בחירת תמונה</button>
         <input type="file" id="imgFile" accept="image/*" hidden>
       </div>
       <p class="hint">בלי תמונה שלך או של המשפחה. תנו למקום לרמוז, לא לגלות.</p>
-      <button class="btn coral" type="submit" style="margin-top:26px">${mine ? "שומרים שינויים" : "שולחים את הקלף"}</button>
+      <button class="btn" type="submit" style="margin-top:26px">${mine ? "שומרים שינויים" : "שולחים את הקלף"}</button>
     </form>`;
   const story = $("#pstory"), cnt = $("#cnt");
   const updCnt = () => cnt.textContent = story.value.length;
@@ -464,17 +487,17 @@ function renderCards() {
     const missing = Math.max(0, state.participantsCount - state.placesCount);
     $("#screen").innerHTML = `
       <div class="deck-scene">
-        <h2><span class="mark">הקלפים עוד הפוכים</span></h2>
+        <h2>הקלפים עוד הפוכים</h2>
         <div class="deck">
           <div class="cardback"></div>
           <div class="cardback"></div>
-          <div class="cardback"><span class="q">?</span></div>
+          <div class="cardback">${rippleTri(150, "#2882f0", 5)}</div>
         </div>
         <div class="bignum">${state.placesCount}</div>
-        <p style="font-weight:900">קלפים כבר במשחק</p>
-        <p class="soft" style="margin-top:14px">${state.placesCount > 0 && missing > 0 ? `עוד ${missing} משתתפים באמצע כתיבה.` : ""}
+        <p style="font-weight:600">קלפים כבר במשחק</p>
+        <p class="soft" style="margin-top:12px">${state.placesCount > 0 && missing > 0 ? `עוד ${missing} משתתפים באמצע כתיבה.` : ""}
         כשכולם ימלאו, המנחות יחשפו את הקלפים ונתחיל לזהות.</p>
-        ${!store.mine ? `<p style="margin-top:18px;font-weight:900;color:var(--coral)">הקלף שלך עוד לא כאן. קדימה, למסך "המקום שלי".</p>` : ""}
+        ${!store.mine ? `<p style="margin-top:16px;font-weight:600;color:var(--advot)">הקלף שלך עוד לא כאן. קדימה, למסך "המקום שלי".</p>` : ""}
       </div>`;
     return;
   }
@@ -491,19 +514,19 @@ function renderCards() {
       : `<span class="tag todo">מי זה?</span>`;
     const media = p.image_url
       ? `<div class="img" style="background-image:url('${esc(p.image_url)}')"></div>`
-      : `<div class="blockimg" style="background:${colorFor(p.id)}">${ripple(64, "rgba(255,255,255,0.95)", 4)}</div>`;
+      : `<div class="blockimg" style="background:${colorFor(p.id)}12">${rippleTri(84, colorFor(p.id), 4)}</div>`;
     return `<button class="gcard" data-place="${p.id}" style="animation-delay:${Math.min(i * 0.05, 0.8)}s">${media}
       <div class="body"><span class="title">${esc(p.title)}</span>${tag}</div></button>`;
   }).join("");
   $("#screen").innerHTML = `
-    <div class="head"><h2><span class="mark">הקלפים</span></h2></div>
+    <div class="head"><h2>הקלפים</h2></div>
     ${state.phase === "guessing" ? `
     <div class="bar-wrap">
-      <div class="bar-label"><span>זיהית ${done} מתוך ${others.length}</span><span>${pct}%</span></div>
-      <div class="bar"><div class="fill ${done ? "" : "empty"}" style="width:${pct}%"></div></div>
+      <div class="bar-label"><span>זיהית <b>${done}</b> מתוך <b>${others.length}</b></span><span>${pct}%</span></div>
+      <div class="bar"><div class="fill" style="width:${pct}%"></div></div>
     </div>` : ""}
     ${state.places.length ? `<div class="grid">${cards}</div>`
-      : `<div class="waiting">${ripple(80, "var(--soft)")}<p class="soft" style="margin-top:10px">עוד אין קלפים במשחק.</p></div>`}
+      : `<div class="waiting">${rippleTri(80, "#5b6478")}<p class="soft" style="margin-top:10px">עוד אין קלפים במשחק.</p></div>`}
   `;
   document.querySelectorAll(".gcard").forEach(c => c.onclick = () => openPlace(c.dataset.place));
 }
@@ -518,19 +541,19 @@ function openPlace(placeId) {
   const options = state.participants.filter(x => x.id !== store.id);
   const media = p.image_url
     ? `<div class="hero" style="background-image:url('${esc(p.image_url)}')"></div>`
-    : `<div class="hero blockimg" style="background:${colorFor(p.id)}">${ripple(90, "rgba(255,255,255,0.95)", 4)}</div>`;
+    : `<div class="hero blockimg" style="background:${colorFor(p.id)}12">${rippleTri(120, colorFor(p.id), 5)}</div>`;
   const ov = $("#overlay");
   ov.innerHTML = `<div class="inner">
     <div class="top"><button class="close-x" id="closeOv">✕ סגירה</button></div>
     ${media}
     <h2>${esc(p.title)}</h2>
-    ${revealedAuthor ? `<p class="kicker" style="color:var(--coral);margin-top:6px">המקום של ${esc(revealedAuthor)}</p>` : ""}
+    ${revealedAuthor ? `<p class="kicker" style="margin-top:6px">המקום של ${esc(revealedAuthor)}</p>` : ""}
     <p class="story">${esc(p.story)}</p>
     ${mine && !revealedAuthor ? `<p class="hint" style="margin-top:20px">זה הקלף שלך. סקרנים לדעת כמה יזהו אותו.</p>` : ""}
     ${canGuess ? `
-      <label style="margin-top:30px">מי לדעתך כתב את זה?</label>
+      <label style="margin-top:28px">מי לדעתך כתב את זה?</label>
       <p class="hint">מותר ואף רצוי לקום ולשאול אנשים.</p>
-      <input type="text" class="search" id="gSearch" placeholder="חיפוש שם..." style="margin-top:12px">
+      <input type="text" id="gSearch" placeholder="חיפוש שם..." style="margin-top:12px">
       <div class="guess-list" id="gList"></div>` : ""}
     ${!canGuess && !mine && !revealedAuthor && myGuess ? `<p class="hint" style="margin-top:20px">הזיהוי שלך: ${esc(nameOf(myGuess.guessed_author_id))}.</p>` : ""}
   </div>`;
@@ -565,8 +588,8 @@ function openPlace(placeId) {
 function renderReveal() {
   if (state.phase !== "revealed") {
     $("#screen").innerHTML = `<div class="waiting">
-      ${ripple(96)}
-      <h2 style="margin-top:14px"><span class="mark">${state.phase === "guessing" ? "עוד מזהים" : "עוד לא"}</span></h2>
+      ${rippleTri(100)}
+      <h2 style="margin-top:14px">${state.phase === "guessing" ? "עוד מזהים" : "עוד לא"}</h2>
       <p class="soft" style="margin-top:12px">${state.phase === "guessing"
         ? "חשיפת השמות תגיע בסוף הסמינר, במעמד חגיגי. בינתיים: לקרוא, לזהות, ולדבר עם אנשים."
         : "קודם כולם ממלאים קלף, אחר כך מזהים, ורק בסוף חושפים שמות."}</p>
@@ -598,10 +621,10 @@ function renderReveal() {
   const trickyPlace = trickiest ? state.places.find(p => p.id === trickiest[0]) : null;
 
   $("#screen").innerHTML = `
-    <h2><span class="mark">החשיפה</span> 🎉</h2>
-    <div class="stat-hero" style="margin-top:20px">
+    <h2>החשיפה 🎉</h2>
+    <div class="stat-hero" style="margin-top:16px">
       <div class="big">${correct} מתוך ${total}</div>
-      <div style="font-weight:900">מקומות שזיהית נכון</div>
+      <div style="font-weight:600">מקומות שזיהית נכון</div>
     </div>
     <div class="stat-row">
       <div class="stat"><div class="n">${guessedMe}</div><div class="t">זיהו את המקום שלך</div></div>
@@ -609,11 +632,11 @@ function renderReveal() {
     </div>
     ${champ ? `<div class="stat wide"><div class="t">🏆 אלוף הזיהויים</div><div class="name">${esc(nameOf(champ[0]))} · ${champ[1] === 1 ? "זיהוי נכון אחד" : champ[1] + " זיהויים נכונים"}</div></div>` : ""}
     ${trickyPlace ? `<div class="stat wide"><div class="t">🎭 הקלף שהכי הרבה טעו בו</div><div class="name">${esc(trickyPlace.title)}</div></div>` : ""}
-    <h2 style="font-size:1.4rem;margin:8px 0 14px">כל המקומות והאנשים</h2>
+    <h2 style="font-size:1.35rem;margin:8px 0 14px">כל המקומות והאנשים</h2>
     <div class="grid">${state.places.map((p, i) => {
       const media = p.image_url
         ? `<div class="img" style="background-image:url('${esc(p.image_url)}')"></div>`
-        : `<div class="blockimg" style="background:${colorFor(p.id)}">${ripple(64, "rgba(255,255,255,0.95)", 4)}</div>`;
+        : `<div class="blockimg" style="background:${colorFor(p.id)}12">${rippleTri(84, colorFor(p.id), 4)}</div>`;
       return `<button class="gcard" data-place="${p.id}" style="animation-delay:${Math.min(i * 0.07, 1.4)}s">
         ${media}<div class="body"><span class="title">${esc(p.title)}</span><span class="tag author">${esc(nameOf(p.author_id))}</span></div></button>`;
     }).join("")}</div>`;
@@ -622,18 +645,34 @@ function renderReveal() {
 
 /* ----- מסך המנחות ----- */
 const PHASES = [
-  { key: "submitting", num: "1", title: "מילוי הקלפים", desc: "כל אחד כותב מקום. הקלפים והשמות עוד חסויים" },
-  { key: "guessing", num: "2", title: "חשיפת הקלפים", desc: "קוראים, מזהים, מדברים עם אנשים" },
-  { key: "revealed", num: "3", title: "חשיפת השמות", desc: "רגע האמת וסטטיסטיקות" }
+  { key: "submitting", title: "1 · מילוי", now: "כולם כותבים קלף. הקלפים והשמות עוד חסויים. עקבו למטה מי מילא, ופנו אישית למי שחסר.", btn: "חושפים את הקלפים", btnClass: "advot", confirm: "לחשוף את הקלפים? מרגע זה כולם רואים את המקומות ואת רשימת השמות." },
+  { key: "guessing", title: "2 · זיהוי", now: "הקלפים גלויים וכולם מזהים ומדברים. אפשר עדיין להשלים קלפים באיחור. כשמגיע הרגע החגיגי, חושפים שמות.", btn: "חושפים את השמות 🎉", btnClass: "", confirm: "רגע האמת: לחשוף את כל השמות?" },
+  { key: "revealed", title: "3 · שמות", now: "השמות גלויים אצל כולם. שווה להקרין את מסך החשיפה במליאה ולשאול: מי גילה משהו מפתיע על מישהו?", btn: null }
 ];
 
+async function adminRefresh() {
+  state.admin.status = await rpc("mekomi_admin_status", { p_pin: state.admin.pin });
+  state.admin.places = await rpc("mekomi_admin_places", { p_pin: state.admin.pin });
+}
+
 function renderAdmin() {
+  const hashPin = location.hash.includes("=") ? location.hash.split("=")[1] : null;
+  if (!state.admin && (hashPin || store.adminPin)) {
+    const pin = hashPin || store.adminPin;
+    state.admin = { pin };
+    (async () => {
+      try { await adminRefresh(); store.adminPin = pin; renderAdmin(); }
+      catch { state.admin = null; if (hashPin) toast("קוד לא נכון", true); renderAdmin(); }
+    })();
+    $("#app").innerHTML = `<div style="padding-top:30dvh;text-align:center">${rippleTri(96)}</div>`;
+    return;
+  }
   if (!state.admin) {
     $("#app").innerHTML = `
       <div class="join">
-        ${ripple(80)}
-        <h2 style="margin-top:10px">מסך המנחות</h2>
-        <form id="pinForm" style="text-align:right">
+        ${rippleTri(80)}
+        <h2 style="margin-top:10px">מסך ניהול</h2>
+        <form id="pinForm" class="panel" style="text-align:right">
           <label for="pin">קוד מנחה</label>
           <input type="tel" id="pin" maxlength="8" inputmode="numeric" autocomplete="off">
           <button class="btn" type="submit">כניסה</button>
@@ -643,59 +682,101 @@ function renderAdmin() {
       e.preventDefault();
       try {
         state.admin = { pin: $("#pin").value.trim() };
-        state.admin.status = await rpc("mekomi_admin_status", { p_pin: state.admin.pin });
+        await adminRefresh();
+        store.adminPin = state.admin.pin;
         renderAdmin();
       } catch { state.admin = null; toast("קוד לא נכון", true); }
     };
     return;
   }
+  if (!state.admin.status) return;
   const s = state.admin.status;
-  const submitted = s.participants.filter(p => p.submitted).length;
+  const places = state.admin.places || [];
+  const phaseIdx = PHASES.findIndex(p => p.key === s.phase);
+  const ph = PHASES[phaseIdx];
+  const submitted = s.participants.filter(p => p.submitted);
+  const missing = s.participants.filter(p => !p.submitted);
   $("#app").innerHTML = `
-    <div class="screen on">
-      <p class="kicker" style="color:var(--coral)">מסך המנחות · רותם וצופית</p>
-      <h2><span class="mark">מקומי</span></h2>
-      <div class="stepper">
-        ${PHASES.map(ph => `<div class="step ${s.phase === ph.key ? "now" : ""}">
-          <span class="dot">${ph.num}</span>
-          <span><b>${ph.title}</b><br><span class="soft" style="font-size:0.85rem">${ph.desc}</span></span>
-        </div>`).join("")}
+    <div class="screen on" style="padding-top:14px">
+      <div class="admin-head">${LOGO}
+        <div><h2 style="font-size:1.4rem">מקומי · ניהול</h2>
+        <span class="soft" style="font-size:0.85rem">לרותם, צופית וניר</span></div>
       </div>
-      <div class="stat-row">
-        <div class="stat"><div class="n">${submitted}</div><div class="t">מילאו קלף</div></div>
-        <div class="stat"><div class="n">${s.participants.length}</div><div class="t">נכנסו למשחק</div></div>
+      <div class="phases">
+        ${PHASES.map((p, i) => `<div class="phase-pill ${i === phaseIdx ? "now" : i < phaseIdx ? "past" : ""}">${p.title}</div>`).join("")}
       </div>
-      ${s.phase === "submitting" ? `<button class="btn teal" id="toGuessing">חושפים את הקלפים ←</button>` : ""}
-      ${s.phase === "guessing" ? `<button class="btn coral" id="toRevealed">חושפים את השמות 🎉</button>
-        <button class="btn ghost" id="backSubmitting">חזרה לשלב המילוי</button>` : ""}
-      ${s.phase === "revealed" ? `<div class="success-note">השמות נחשפו. שווה להקרין את מסך החשיפה במליאה.</div>
-        <button class="btn ghost" id="backGuessing" style="margin-top:14px">חזרה לשלב הקלפים (ביטול חשיפה)</button>` : ""}
-      <button class="btn ghost" id="refreshBtn">רענון נתונים</button>
+      <div class="whatnow panel"><b>מה עכשיו:</b> ${ph.now}</div>
+      <div class="chips">
+        <div class="chip-stat"><div class="n">${s.participants.length}</div><div class="t">נכנסו</div></div>
+        <div class="chip-stat"><div class="n">${submitted.length}</div><div class="t">מילאו קלף</div></div>
+        <div class="chip-stat"><div class="n">${s.total_guesses}</div><div class="t">זיהויים</div></div>
+      </div>
+      <div class="admin-actions">
+        ${ph.btn ? `<button class="btn ${ph.btnClass}" id="advanceBtn">${ph.btn}</button>` : ""}
+        ${phaseIdx > 0 ? `<button class="btn quiet" id="backBtn">חזרה לשלב הקודם</button>` : ""}
+      </div>
+      ${missing.length && s.phase !== "revealed" ? `
+      <div class="missing panel">
+        <b>עוד לא מילאו (${missing.length}):</b>
+        <div class="names">${missing.map(p => esc(p.name)).join(" · ")}</div>
+        <button class="copybtn" id="copyMissing">העתקת הרשימה לפנייה אישית</button>
+      </div>` : ""}
+      <details class="mod">
+        <summary>הצצה לקלפים, לעיניים שלכן בלבד (${places.length})</summary>
+        <p class="hint" style="margin-bottom:8px">לבדוק לפני חשיפת הקלפים שאין תמונה או פרט שחושפים מישהו בטעות.</p>
+        ${places.map(p => `<div class="modcard">
+          <div class="thumb" ${p.image_url ? `style="background-image:url('${esc(p.image_url)}')"` : ""}>${p.image_url ? "" : rippleTri(34, "#2882f0", 3)}</div>
+          <div><div class="who">${esc(p.author)}</div><div class="ttl">${esc(p.title)}</div>
+          <div class="snip">${esc(p.story.slice(0, 90))}${p.story.length > 90 ? "…" : ""}</div>
+          ${s.phase !== "submitting" ? `<div class="snip">זיהו נכון: ${p.right_guesses} · טעו: ${p.wrong_guesses}</div>` : ""}</div>
+        </div>`).join("") || `<p class="hint" style="padding-bottom:12px">עוד אין קלפים.</p>`}
+      </details>
       <table>
-        <tr><th>שם</th><th>מילא קלף</th><th>זיהויים</th></tr>
+        <tr><th>שם</th><th>קלף</th><th>זיהויים</th><th></th></tr>
         ${s.participants.map(p => `<tr>
           <td>${esc(p.name)}</td>
           <td class="${p.submitted ? "yes" : "no"}">${p.submitted ? "✓" : "✕"}</td>
-          <td>${p.guesses}</td></tr>`).join("")}
+          <td>${p.guesses}</td>
+          <td><button class="del" data-id="${p.id}" data-name="${esc(p.name)}" title="מחיקת משתתף">🗑</button></td></tr>`).join("")}
       </table>
+      <p class="autorefresh">הנתונים מתרעננים לבד כל חצי דקה · <a href="#" id="manualRefresh" style="color:var(--blue)">רענון עכשיו</a></p>
     </div>`;
-  const setPhase = async (phase, confirmMsg) => {
+  const doPhase = async (phase, confirmMsg) => {
     if (confirmMsg && !confirm(confirmMsg)) return;
     try {
       await rpc("mekomi_set_phase", { p_pin: state.admin.pin, p_phase: phase });
-      state.admin.status = await rpc("mekomi_admin_status", { p_pin: state.admin.pin });
+      await adminRefresh();
       renderAdmin();
       toast("בוצע");
     } catch { toast("משהו השתבש, נסו שוב", true); }
   };
-  $("#toGuessing") && ($("#toGuessing").onclick = () => setPhase("guessing", "לחשוף את הקלפים? מרגע זה כולם רואים את המקומות ואת רשימת השמות."));
-  $("#toRevealed") && ($("#toRevealed").onclick = () => setPhase("revealed", "רגע האמת: לחשוף את כל השמות?"));
-  $("#backSubmitting") && ($("#backSubmitting").onclick = () => setPhase("submitting"));
-  $("#backGuessing") && ($("#backGuessing").onclick = () => setPhase("guessing", "לבטל את חשיפת השמות ולחזור לשלב הקלפים?"));
-  $("#refreshBtn").onclick = async () => {
-    state.admin.status = await rpc("mekomi_admin_status", { p_pin: state.admin.pin });
-    renderAdmin();
+  $("#advanceBtn") && ($("#advanceBtn").onclick = () => doPhase(PHASES[phaseIdx + 1].key, ph.confirm));
+  $("#backBtn") && ($("#backBtn").onclick = () => doPhase(PHASES[phaseIdx - 1].key, "לחזור לשלב הקודם?"));
+  $("#copyMissing") && ($("#copyMissing").onclick = async () => {
+    try {
+      await navigator.clipboard.writeText(missing.map(p => p.name).join("\n"));
+      toast("הרשימה הועתקה");
+    } catch { toast("ההעתקה נכשלה", true); }
+  });
+  document.querySelectorAll(".del").forEach(b => b.onclick = async () => {
+    if (!confirm(`למחוק את ${b.dataset.name}? הקלף והזיהויים שלו יימחקו. מיועד לכפילויות ולניסיונות.`)) return;
+    try {
+      await rpc("mekomi_admin_delete_participant", { p_pin: state.admin.pin, p_participant: b.dataset.id });
+      await adminRefresh();
+      renderAdmin();
+      toast("נמחק");
+    } catch { toast("משהו השתבש, נסו שוב", true); }
+  });
+  $("#manualRefresh").onclick = async e => {
+    e.preventDefault();
+    try { await adminRefresh(); renderAdmin(); } catch { toast("אין קליטה כרגע", true); }
   };
+  if (!state.adminTimer) {
+    state.adminTimer = setInterval(async () => {
+      if (!isAdminRoute() || !state.admin) return;
+      try { await adminRefresh(); if (document.activeElement.tagName !== "INPUT") renderAdmin(); } catch {}
+    }, 30000);
+  }
 }
 
 /* ===== תמונות ===== */
@@ -731,7 +812,7 @@ async function upload(dataUrl) {
 /* ===== אתחול ===== */
 window.addEventListener("hashchange", render);
 (async function init() {
-  $("#app").innerHTML = `<div style="padding-top:30dvh;text-align:center">${ripple(96)}</div>`;
+  $("#app").innerHTML = `<div style="padding-top:30dvh;text-align:center">${rippleTri(96)}</div>`;
   try { await refresh(); } catch {}
   render();
 })();
