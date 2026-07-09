@@ -303,6 +303,21 @@ const nameOf = id => state.participants.find(x => x.id === id)?.name || "";
 const isMine = p => (state.phase === "revealed" && p.author_id) ? p.author_id === store.id : p.id === store.mine?.id;
 const LOGO = `<img src="advot-logo.png" alt="אדוות">`;
 
+function logout() {
+  ["mekomi_id", "mekomi_name", "mekomi_mine", "mekomi_draft", "mekomi_place_id"].forEach(k => localStorage.removeItem(k));
+  state.guesses = [];
+  state.tab = "mine";
+  render();
+  toast("התנתקת. אפשר להיכנס מחדש");
+}
+
+function adminLogout() {
+  localStorage.removeItem("mekomi_admin_pin");
+  state.admin = null;
+  if (state.adminTimer) { clearInterval(state.adminTimer); state.adminTimer = null; }
+  location.hash = "";
+}
+
 function toast(msg, err) {
   const t = $("#toast");
   t.textContent = msg;
@@ -446,7 +461,8 @@ function renderMine() {
       </div>
       <p class="hint">בלי תמונה שלך או של המשפחה. תנו למקום לרמוז, לא לגלות.</p>
       <button class="btn" type="submit" style="margin-top:26px">${mine ? "שומרים שינויים" : "שולחים את הקלף"}</button>
-    </form>`;
+    </form>
+    <button class="btn quiet" id="logoutBtn" style="margin-top:22px">התנתקות מהמשחק</button>`;
   const story = $("#pstory"), cnt = $("#cnt");
   const updCnt = () => cnt.textContent = story.value.length;
   updCnt();
@@ -478,6 +494,9 @@ function renderMine() {
       if (err.message === "game_locked") toast("המשחק כבר נסגר לעריכה", true);
       else toast("אין קליטה כרגע. הטקסט שמור, נסו שוב עוד רגע", true);
     }
+  };
+  $("#logoutBtn").onclick = () => {
+    if (confirm("להתנתק מהמשחק? אפשר יהיה להיכנס שוב בשם אחר. קלף ששלחת יישאר במשחק, אבל לא תוכל לערוך אותו מהמכשיר הזה.")) logout();
   };
 }
 
@@ -740,6 +759,7 @@ function renderAdmin() {
           <td><button class="del" data-id="${p.id}" data-name="${esc(p.name)}" title="מחיקת משתתף">🗑</button></td></tr>`).join("")}
       </table>
       <p class="autorefresh">הנתונים מתרעננים לבד כל חצי דקה · <a href="#" id="manualRefresh" style="color:var(--blue)">רענון עכשיו</a></p>
+      <button class="btn quiet" id="adminLogoutBtn" style="margin-top:8px">יציאה מהניהול</button>
     </div>`;
   const doPhase = async (phase, confirmMsg) => {
     if (confirmMsg && !confirm(confirmMsg)) return;
@@ -770,6 +790,9 @@ function renderAdmin() {
   $("#manualRefresh").onclick = async e => {
     e.preventDefault();
     try { await adminRefresh(); renderAdmin(); } catch { toast("אין קליטה כרגע", true); }
+  };
+  $("#adminLogoutBtn").onclick = () => {
+    if (confirm("לצאת ממסך הניהול? כדי לחזור צריך את קישור הניהול עם הקוד.")) adminLogout();
   };
   if (!state.adminTimer) {
     state.adminTimer = setInterval(async () => {
