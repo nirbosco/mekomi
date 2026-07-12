@@ -402,7 +402,6 @@ function renderJoin() {
       <div style="margin-bottom:6px">${rippleTri(84)}</div>
       <img class="logo" src="advot-logo.png" alt="אדוות — מנהיגות מחוללת שינוי">
       <h1>מקומי</h1>
-      <span class="chip">משנה מקום, מקום משני</span>
       <p class="intro">לכל אחת ואחד יש מקום שהוא חלק ממי שהם.<br>ננסה לגלות של מי כל מקום. מוכנים?</p>
       <form id="joinForm" class="panel">
         <label for="jname">איך קוראים לך?</label>
@@ -428,7 +427,7 @@ function renderJoin() {
 function renderMain() {
   const tabs = [["mine", "המקום שלי"], ["cards", "הקלפים"], ["reveal", "החשיפה"]];
   $("#app").innerHTML = `
-    <div class="brandbar">${LOGO}<span class="kicker">מקומי · משנה מקום, מקום משני</span></div>
+    <div class="brandbar">${LOGO}<span class="kicker">מקומי</span></div>
     <div class="screen on" id="screen"></div>
     <nav><div class="wrap">
       ${tabs.map(([k, t]) => `<button data-tab="${k}" class="${state.tab === k ? "on" : ""}">${t}</button>`).join("")}
