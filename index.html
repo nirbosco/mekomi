@@ -839,10 +839,24 @@ async function upload(dataUrl) {
   return `${SB_URL}/storage/v1/object/public/mekomi-images/${name}`;
 }
 
+/* אם המשחק אופס בשרת, הזהות המקומית התיישנה — מנקים אותה ומתחילים נקי */
+async function healStaleIdentity() {
+  if (!store.id) return;
+  let exists = true;
+  try { exists = await rpc("mekomi_participant_exists", { p_id: store.id }); }
+  catch { return; }   // אין קליטה: לא מוחקים
+  if (!exists) {
+    ["mekomi_id", "mekomi_name", "mekomi_mine", "mekomi_draft", "mekomi_place_id"].forEach(k => localStorage.removeItem(k));
+    state.guesses = [];
+    state.tab = "mine";
+  }
+}
+
 /* ===== אתחול ===== */
 window.addEventListener("hashchange", render);
 (async function init() {
   $("#app").innerHTML = `<div style="padding-top:30dvh;text-align:center">${rippleTri(96)}</div>`;
+  try { await healStaleIdentity(); } catch {}
   try { await refresh(); } catch {}
   render();
 })();
