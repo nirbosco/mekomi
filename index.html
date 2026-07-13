@@ -160,12 +160,33 @@
   .overlay .hero.blockimg { position: relative; overflow: hidden; }
   .overlay .story { font-size: 1.12rem; margin-top: 14px; white-space: pre-wrap; }
   .close-x { background: var(--card); border: 1px solid var(--line); border-radius: 999px; font-weight: 600; padding: 8px 18px; color: var(--soft); }
-  .guess-list { margin-top: 12px; display: grid; gap: 8px; }
-  .guess-list button {
-    text-align: right; padding: 12px 18px; background: var(--card);
-    border: 1.5px solid var(--line); border-radius: 999px; font-size: 1rem; font-weight: 500;
+  /* ===== dropdown לבחירת שם ===== */
+  .dd { position: relative; margin-top: 12px; }
+  .dd-trigger {
+    width: 100%; display: flex; align-items: center; justify-content: space-between;
+    padding: 13px 18px; background: var(--card); border: 1.5px solid var(--line);
+    border-radius: 14px; font-size: 1.05rem; font-weight: 600; color: var(--ink); text-align: right;
   }
-  .guess-list button.picked { background: var(--blue); border-color: var(--blue); color: #fff; font-weight: 600; }
+  .dd-trigger.empty { color: var(--soft); font-weight: 500; }
+  .dd-trigger.open { border-color: var(--advot); box-shadow: 0 0 0 3px rgba(40,130,240,0.15); }
+  .dd-caret { color: var(--soft); font-size: 0.8rem; margin-inline-start: 10px; }
+  .dd-panel {
+    margin-top: 8px; border: 1.5px solid var(--line); border-radius: 14px; background: var(--card);
+    overflow: hidden; box-shadow: 0 8px 24px rgba(10,19,48,0.12);
+  }
+  .dd-panel input { border: 0; border-bottom: 1px solid var(--line); border-radius: 0; box-shadow: none; }
+  .dd-panel input:focus { box-shadow: none; border-color: var(--advot); }
+  .dd-list { max-height: 42vh; overflow-y: auto; display: grid; }
+  .dd-list button {
+    text-align: right; padding: 12px 18px; background: var(--card); border: 0;
+    border-bottom: 1px solid var(--line); font-size: 1rem; font-weight: 500; color: var(--ink);
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  }
+  .dd-list button:last-child { border-bottom: 0; }
+  .dd-list button.sel { background: var(--tint); color: var(--blue); font-weight: 700; }
+  .dd-list button.used { color: #d33; text-decoration: line-through; text-decoration-thickness: 2px; }
+  .dd-note { font-size: 0.72rem; font-weight: 700; color: #d33; text-decoration: none; white-space: nowrap; }
+  .dd-check { color: var(--blue); font-weight: 800; }
 
   /* ===== reveal ===== */
   .stat-hero {
@@ -578,9 +599,17 @@ function openPlace(placeId) {
     ${mine && !revealedAuthor ? `<p class="hint" style="margin-top:20px">זה הקלף שלך. סקרנים לדעת כמה יזהו אותו.</p>` : ""}
     ${canGuess ? `
       <label style="margin-top:28px">מי לדעתך כתב את זה?</label>
-      <p class="hint">מותר ואף רצוי לקום ולשאול אנשים.</p>
-      <input type="text" id="gSearch" placeholder="חיפוש שם..." style="margin-top:12px">
-      <div class="guess-list" id="gList"></div>` : ""}
+      <p class="hint">מותר ואף רצוי לקום ולשאול אנשים. אפשר לבחור כל שם רק לקלף אחד.</p>
+      <div class="dd">
+        <button class="dd-trigger ${myGuess ? "" : "empty"}" id="ddTrigger">
+          <span id="ddCurrent">${myGuess ? esc(nameOf(myGuess.guessed_author_id)) : "בחרו שם…"}</span>
+          <span class="dd-caret">▾</span>
+        </button>
+        <div class="dd-panel" id="ddPanel" hidden>
+          <input type="text" id="gSearch" placeholder="חיפוש שם…" autocomplete="off">
+          <div class="dd-list" id="gList"></div>
+        </div>
+      </div>` : ""}
     ${!canGuess && !mine && !revealedAuthor && myGuess ? `<p class="hint" style="margin-top:20px">הזיהוי שלך: ${esc(nameOf(myGuess.guessed_author_id))}.</p>` : ""}
   </div>`;
   ov.className = "overlay on";
@@ -588,25 +617,43 @@ function openPlace(placeId) {
   $("#closeOv").onclick = () => { ov.className = "overlay"; render(); };
   if (canGuess) {
     const list = $("#gList");
-    const draw = q => {
+    const trigger = $("#ddTrigger");
+    const panel = $("#ddPanel");
+    const current = $("#ddCurrent");
+    const setOpen = open => {
+      panel.hidden = !open;
+      trigger.classList.toggle("open", open);
+      if (open) { $("#gSearch").value = ""; draw(""); $("#gSearch").focus(); }
+    };
+    trigger.onclick = () => setOpen(panel.hidden);
+    function draw(q) {
+      // מפה: שם -> הקלף שסומן בו (מתוך הזיהויים שלי)
+      const usedBy = {};
+      state.guesses.forEach(g => { usedBy[g.guessed_author_id] = g.place_id; });
       const rows = options.filter(o => !q || o.name.includes(q));
-      list.innerHTML = rows.map(o =>
-        `<button data-id="${o.id}" class="${myGuess?.guessed_author_id === o.id ? "picked" : ""}">${esc(o.name)}</button>`).join("")
-        || `<p class="hint">אין שם כזה ברשימה</p>`;
+      list.innerHTML = rows.map(o => {
+        const at = usedBy[o.id];
+        const selected = at === p.id;
+        const elsewhere = at && at !== p.id;
+        const cls = selected ? "sel" : elsewhere ? "used" : "";
+        const badge = selected ? `<span class="dd-check">✓</span>`
+          : elsewhere ? `<span class="dd-note">כבר סומן בקלף אחר</span>` : "";
+        return `<button data-id="${o.id}" class="${cls}"><span>${esc(o.name)}</span>${badge}</button>`;
+      }).join("") || `<p class="hint" style="padding:12px 18px">אין שם כזה ברשימה</p>`;
       list.querySelectorAll("button").forEach(b => b.onclick = async () => {
+        const id = b.dataset.id;
         try {
-          await rpc("mekomi_guess", { p_guesser: store.id, p_place: p.id, p_guessed: b.dataset.id });
-          const g = state.guesses.find(g => g.place_id === p.id);
-          if (g) g.guessed_author_id = b.dataset.id;
-          else state.guesses.push({ place_id: p.id, guessed_author_id: b.dataset.id });
-          list.querySelectorAll("button").forEach(x => x.className = "");
-          b.className = "picked";
-          toast(`נרשם: ${b.textContent}`);
+          await rpc("mekomi_guess", { p_guesser: store.id, p_place: p.id, p_guessed: id });
+          // שם משויך לקלף אחד: מסירים אותו מקלף קודם ומקצים לקלף הזה
+          state.guesses = state.guesses.filter(g => g.guessed_author_id !== id && g.place_id !== p.id);
+          state.guesses.push({ place_id: p.id, guessed_author_id: id });
+          current.textContent = nameOf(id);
+          trigger.classList.remove("empty");
+          setOpen(false);
+          toast(`נבחר: ${nameOf(id)}`);
         } catch { toast("אין קליטה כרגע. נסו שוב עוד רגע", true); }
       });
-    };
-    draw("");
-    $("#gSearch").oninput = e => draw(e.target.value.trim());
+    }
   }
 }
 
