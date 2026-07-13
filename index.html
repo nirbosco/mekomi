@@ -204,7 +204,7 @@
   .lead-row { display: flex; align-items: center; gap: 12px; padding: 8px 12px; background: var(--tint); border-radius: 12px; }
   .lead-rank { font-size: 1.3rem; flex: none; }
   .lead-name { font-weight: 800; font-size: 1.1rem; flex: 1; }
-  .lead-n { font-weight: 800; font-size: 1.15rem; color: var(--blue); background: var(--card); border-radius: 999px; padding: 2px 14px; flex: none; }
+  .lead-n { font-weight: 800; font-size: 0.95rem; color: var(--blue); background: var(--card); border-radius: 999px; padding: 4px 14px; flex: none; white-space: nowrap; }
 
   .confetti { position: fixed; inset: 0; pointer-events: none; z-index: 40; overflow: hidden; }
   .confetti i { position: absolute; top: -4vh; width: 10px; height: 16px; border-radius: 3px; animation: fall 3.2s ease-in forwards; }
@@ -710,11 +710,13 @@ function renderReveal() {
     </div>
     ${top3.length ? `<div class="stat wide">
       <div class="t">🏆 שלושת המזהים הגדולים · מי זיהו הכי הרבה אנשים</div>
-      <div class="lead">${top3.map(([gid, n], i) => `<div class="lead-row">
+      <div class="lead">${top3.map(([gid, n], i) => {
+        const outOf = state.places.filter(pl => pl.author_id !== gid).length;
+        return `<div class="lead-row">
         <span class="lead-rank">${["🥇", "🥈", "🥉"][i]}</span>
         <span class="lead-name">${esc(nameOf(gid))}</span>
-        <span class="lead-n">${n}</span>
-      </div>`).join("")}</div>
+        <span class="lead-n">${n} מתוך ${outOf}</span>
+      </div>`; }).join("")}</div>
     </div>` : ""}
     ${trickyPlace ? `<div class="stat wide"><div class="t">🎭 הקלף שהכי הרבה טעו בו</div><div class="name">${esc(trickyPlace.title)}</div></div>` : ""}
     <h2 style="font-size:1.35rem;margin:8px 0 14px">כל המקומות והאנשים</h2>
